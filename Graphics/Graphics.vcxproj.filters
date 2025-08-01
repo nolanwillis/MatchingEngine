@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{47edaf86-001f-4799-98cd-02e63fbe00b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{5ae5cd6d-3feb-4b9e-981f-d7fb1eb1db5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{bfc1df9b-a188-4e48-8b9a-0f730f237b97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Compiled">
+      <UniqueIdentifier>{83bf5bcd-b562-4dfc-9e8b-0a94d6c04705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Original">
+      <UniqueIdentifier>{e231d348-dc47-4e30-a460-a99e7baa4047}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Camera.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ColorGraphicsObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ColorShaderObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConstantBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DX11Manager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GraphicsObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IndexBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Mesh.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NullGraphicsObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NullShaderObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\QuadMesh.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderMappings.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VertexBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\Compiled\Color.Px.h">
+      <Filter>Shaders\Compiled</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\Compiled\Color.Vx.h">
+      <Filter>Shaders\Compiled</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\Compiled\Null.Px.h">
+      <Filter>Shaders\Compiled</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\Compiled\Null.Vx.h">
+      <Filter>Shaders\Compiled</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Colors.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorGraphicsObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorShaderObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ConstantBuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DX11Manager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IndexBuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NullGraphicsObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NullShaderObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QuadMesh.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexBuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\Original\Color.Px.hlsl">
+      <Filter>Shaders\Original</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Original\Color.Vx.hlsl">
+      <Filter>Shaders\Original</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Original\Null.Px.hlsl">
+      <Filter>Shaders\Original</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Original\Null.Vx.hlsl">
+      <Filter>Shaders\Original</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
