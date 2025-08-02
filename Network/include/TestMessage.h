@@ -14,10 +14,10 @@ public:
 	TestMessage& operator=(const TestMessage& rhs) = delete;
 	virtual ~TestMessage() = default;
 
-	virtual void Execute() override;
 	virtual void Serialize(char* buffer) override;
 	virtual void Deserialize(char* buffer) override;
-	virtual size_t GetSerializedSize() override;
+	virtual size_t GetSerializedSize() const override;
+	virtual void Print() const override;
 };
 
 #endif

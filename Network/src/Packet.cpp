@@ -186,7 +186,7 @@ void Packet::WaitForACK(Socket& socket)
 {
 	while (true)
 	{
-		Message message;
+		Message message(Message::Type::Null);
 		this->Receive(socket, &message);
 		if (this->type == Packet::Type::ACK)
 		{

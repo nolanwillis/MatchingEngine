@@ -1,4 +1,5 @@
 #include "TestMessage.h"
+#include "PlaceOrderMessage.h"
 
 #include <iostream>
 #include <string>
@@ -11,14 +12,37 @@ int main()
 	char* dataBuffer = new char[sizeof(int)];
 
 	TestMessage message1(7);
-	message1.Execute();
 	message1.Serialize(dataBuffer);
+	message1.Print();
 	
 	TestMessage message2(5);
 	message2.Deserialize(dataBuffer);
-	message2.Execute();
+	message2.Print();
 
 	delete dataBuffer;
+
+	PlaceOrderMessage pom;
+	pom.SetSymbol("AWSA");
+	pom.userID = 38950493040;
+	pom.quantity = 50;
+	pom.isBuy = 0;
+	pom.limit = 1200.0f;
+	pom.orderType =	PlaceOrderMessage::Type::Limit;
+	
+	PlaceOrderMessage pom2;
+	
+	char* dataBuffer2 = new char[pom.GetSerializedSize()];
+
+	pom.Serialize(dataBuffer2);
+	pom.Print();
+
+	pom2.Deserialize(dataBuffer2);
+	pom2.Print();
+	
+	delete dataBuffer2;
+	
+	printf("Size of Place Order Message: %zu\n", pom.GetSerializedSize());
+
 
 
 	while (true)
