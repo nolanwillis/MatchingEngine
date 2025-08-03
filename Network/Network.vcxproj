@@ -111,6 +111,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DataStructures\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +129,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)DataStructures\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,9 +142,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\MessageHandler.h" />
     <ClInclude Include="include\NetworkManager.h" />
     <ClInclude Include="include\Packet.h" />
     <ClInclude Include="include\Message.h" />
+    <ClInclude Include="include\PlaceOrderMessage.h" />
     <ClInclude Include="include\Position.h" />
     <ClInclude Include="include\Socket.h" />
     <ClInclude Include="include\SocketTCP.h" />
@@ -150,6 +154,7 @@
     <ClInclude Include="include\TestMessage.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\PlaceOrderMessage.cpp" />
     <ClCompile Include="src\NetworkManager.cpp" />
     <ClCompile Include="src\Packet.cpp" />
     <ClCompile Include="src\Socket.cpp" />
