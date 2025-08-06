@@ -10,25 +10,23 @@ public:
 		Test,
 		PlaceOrder
 	};
+	Type messageType;
 
 	Message() = delete;
-	Message(Message::Type type) : type(type) {};
-	Message(const Message& rhs) = delete;
-	Message& operator=(const Message& rhs) = delete;
+	Message(Message::Type type);
+	Message(const Message& rhs);
+	Message& operator=(const Message& rhs);
 	virtual ~Message() = default;
 
 	// Serialized object into an array of bytes.
-	virtual void Serialize(char* buffer) { buffer; /* Do nothing by default. */ };
+	virtual void Serialize(char* buffer);
 	// Deserialized object from an array of bytes.
-	virtual void Deserialize(char* buffer) { buffer; /* Do nothing by default.*/ };
+	virtual void Deserialize(char* buffer);
 	// Returns the size of the serialized object.
-	virtual size_t GetSerializedSize() const { return 0; };
+	virtual size_t GetSerializedSize() const;
 	virtual void Print() const {};
 	
-	Type GetType() const { return type; };
-
-private:
-	Type type;
+	Type GetType() const { return messageType; };
 };
 
 #endif

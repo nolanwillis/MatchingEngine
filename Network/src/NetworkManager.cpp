@@ -15,7 +15,6 @@ NetworkManager::NetworkManager()
 
 void NetworkManager::Create()
 {
-
 	NetworkManager& instance = NetworkManager::GetInstance();
 	instance.iResult = WSAStartup(MAKEWORD(2, 2), &instance.wsaData);
 	if (instance.iResult != 0) 

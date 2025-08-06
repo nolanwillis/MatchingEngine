@@ -1,0 +1,199 @@
+#include "OrderBookWorker.h"
+#include "OrderBook.h"
+
+namespace MatchingEngine
+{
+	OrderBookWorker::OrderBookWorker(OrderBook& orderBook, std::shared_future<void> stopSignal)
+		:
+		orderBook(orderBook),
+		stopSignal(std::move(stopSignal)),
+		orderQueue(),
+		orderQueueMtx(),
+		cv(),
+		thread()
+	{}
+	OrderBookWorker::~OrderBookWorker()
+	{
+		// Tell the thread to check it's stop signal condition.
+		cv.notify_one();
+
+		if (thread.joinable())
+		{
+			thread.join();
+		}
+	}
+
+	void OrderBookWorker::Start()
+	{
+		thread = std::thread(std::ref(*this));
+	}
+	void OrderBookWorker::AddOrder(const Order& order)
+	{
+		std::lock_guard<std::mutex> lock(orderQueueMtx);
+		orderQueue.push(order);
+		cv.notify_one();
+	}
+	void OrderBookWorker::WaitUntilIdle()
+	{
+		while (true)
+		{
+			std::unique_lock<std::mutex> lock(orderQueueMtx);
+			if (orderQueue.empty())
+			{
+				break;
+			}
+			lock.unlock();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+	}
+
+	void OrderBookWorker::operator()()
+	{
+		while (true)
+		{
+			std::unique_lock<std::mutex> lock(orderQueueMtx);
+			
+			// Wait while the queue is empty and the stop signal has not been sent. 
+			cv.wait(lock, [this] 
+			{ 
+				return !orderQueue.empty() || 
+				stopSignal.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
+			});
+			// If the stop signal has been sent, allowing us to reach this point, don't
+			// process anything just exit.
+			if (stopSignal.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
+			{
+				return;
+			}
+			// Ensure an empty queue is not popped from.
+			if (orderQueue.empty())
+			{
+				continue;
+			}
+
+			Order newOrder = orderQueue.front();
+			orderQueue.pop();
+
+			lock.unlock();
+
+			if (newOrder.orderType == Order::Type::Limit)
+			{
+				AddLimitOrder(newOrder);
+			}
+			else if (newOrder.orderType == Order::Type::Market)
+			{
+				ExecuteMatchOrder(newOrder);
+			}
+		}
+	}
+
+	void OrderBookWorker::AddLimitOrder(Order& order)
+	{
+		auto& sellOrders = orderBook.sellOrders;
+		auto& buyOrders = orderBook.buyOrders;
+
+
+		if (order.isBuy)
+		{
+			// Go through all the price levels until the price level is above our price or 
+			// we've filled the buy order.
+			auto itr = sellOrders.begin();
+			while (itr != sellOrders.end() && order.price >= itr->first && order.quantity > 0
+				&& !sellOrders.empty())
+			{
+				// Get reference to the dequeue of sell orders at this price level. 
+				auto& priceLevel = itr->second;
+
+				// Go through all the sell orders at this price level until the order is filled
+				// or the price level is emptied.
+				while (!priceLevel.empty() && order.quantity > 0)
+				{
+					Order& sellOrder = priceLevel.front();
+
+					int quantitySold = std::min(order.quantity, sellOrder.quantity);
+					
+					order.quantity -= quantitySold;
+					sellOrder.quantity -= quantitySold;
+					
+					if (sellOrder.quantity == 0)
+					{
+						priceLevel.pop_front();
+					}
+				}
+
+				if (priceLevel.empty())
+				{
+					itr = sellOrders.erase(itr);
+				}
+				else
+				{
+					itr++;
+				}
+			}
+			
+			// If there's unfilled quantity push the buy order onto the order book. 
+			if (order.quantity != 0)
+			{
+				buyOrders[order.price].push_back(order);
+			}
+		}
+		else
+		{
+			// Go through all the price levels until the price level is below our price or 
+			// we've filled the sell order.
+			auto itr = buyOrders.begin();
+			while (itr != buyOrders.end() && order.price <= itr->first && order.quantity > 0 &&
+				!buyOrders.empty())
+			{
+				// Get reference to the dequeue of buy orders at this price level. 
+				auto& priceLevel = itr->second;
+
+				// Go through all the buy orders at this price level until the order is filled
+				// or the price level is emptied.
+				while (!priceLevel.empty() && order.quantity > 0)
+				{
+					Order& buyOrder = priceLevel.front();
+
+					int quantitySold = std::min(order.quantity, buyOrder.quantity);
+
+					order.quantity -= quantitySold;
+					buyOrder.quantity -= quantitySold;
+
+					if (buyOrder.quantity == 0)
+					{
+						priceLevel.pop_front();
+					}
+				}
+
+				if (priceLevel.empty())
+				{
+					itr = buyOrders.erase(itr);
+				}
+				else
+				{
+					itr++;
+				}
+			}
+
+			// If there's unfilled quantity push the sell order onto the order book. 
+			if (order.quantity != 0)
+			{
+				sellOrders[order.price].push_back(order);
+			}
+		}
+	}
+	void OrderBookWorker::ExecuteMatchOrder(Order& order)
+	{
+		auto& sellOrders = orderBook.sellOrders;
+		auto& buyOrders = orderBook.buyOrders;
+
+		if (order.isBuy)
+		{
+
+		}
+		else
+		{
+
+		}
+	}
+}

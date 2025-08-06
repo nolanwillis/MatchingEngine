@@ -11,51 +11,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\NetworkManager.h">
+    <ClInclude Include="include\Order.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Packet.h">
+    <ClInclude Include="include\OrderBook.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Message.h">
+    <ClInclude Include="include\OrderBookWorker.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Socket.h">
+    <ClInclude Include="include\Engine.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\SocketTCP.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SocketUDP.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\TestMessage.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MessageHandler.h">
+    <ClInclude Include="include\Stock.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\NetworkManager.cpp">
+    <ClCompile Include="src\Order.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Packet.cpp">
+    <ClCompile Include="src\Engine.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Socket.cpp">
+    <ClCompile Include="src\OrderBook.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\SocketTCP.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SocketUDP.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestMessage.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Message.cpp">
+    <ClCompile Include="src\OrderBookWorker.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
