@@ -15,6 +15,7 @@ namespace MatchingEngine
 	{
 	public:
 		friend class OrderBookWorker;
+		friend class OrderBookManager;
 		
 		OrderBook() = delete;
 		OrderBook(Stock::Symbol symbol, std::shared_future<void> stopSignal);
@@ -22,7 +23,7 @@ namespace MatchingEngine
 		OrderBook& operator= (const OrderBook& rhs) = delete;
 		~OrderBook() = default;
 
-		void Add(const Order& order);
+		void Add(std::unique_ptr<Order> order);
 		Stock::Symbol GetStockSymbol() const;
 		void WaitUntilIdle();
 		void Print() const;
@@ -31,8 +32,8 @@ namespace MatchingEngine
 		Stock::Symbol symbol;
 		OrderBookWorker worker;
 		
-		std::map<float, std::deque<Order>, std::greater<>> buyOrders;
-		std::map<float, std::deque<Order>> sellOrders;
+		std::map<float, std::deque<std::unique_ptr<Order>>, std::greater<>> buyOrders;
+		std::map<float, std::deque<std::unique_ptr<Order>>> sellOrders;
 	};
 }
 

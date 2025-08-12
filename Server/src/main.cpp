@@ -1,8 +1,12 @@
 #include "TestMessage.h"
-#include "PlaceOrderMessage.h"
+#include "Order.h"
+
+#include "OrderBookManager.h"
 
 #include <iostream>
 #include <string>
+
+using namespace MatchingEngine;
 
 int main()
 {
@@ -28,6 +32,7 @@ int main()
 		if (input == "exit")
 			break;
 	}
+
 	return 0;
 
 	/* Notes:
@@ -37,6 +42,4 @@ int main()
 			3. Setup order book and pages for each symbol
 			4. Create interface for applying different matching algorithms (FIFO for now)
 	*/ 
-
-	return 0; 
 }

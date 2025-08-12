@@ -23,7 +23,7 @@ namespace MatchingEngine
 		~OrderBookWorker();
 
 		void Start();
-		void AddOrder(const Order& order);
+		void AddOrder(std::unique_ptr<Order> order);
 		void WaitUntilIdle();
 
 		void operator()();
@@ -33,14 +33,14 @@ namespace MatchingEngine
 
 		std::shared_future<void> stopSignal;
 		
-		std::queue<Order> orderQueue;
+		std::queue<std::unique_ptr<Order>> orderQueue;
 		std::mutex orderQueueMtx;
 
 		std::condition_variable cv;
 		std::thread thread;
 
-		void AddLimitOrder(Order& order);
-		void ExecuteMatchOrder(Order& order);
+		void AddLimitOrder(std::unique_ptr<Order> order);
+		void ExecuteMatchOrder(std::unique_ptr<Order> order);
 	};
 }
 

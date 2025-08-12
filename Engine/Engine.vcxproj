@@ -139,14 +139,14 @@
   <ItemGroup>
     <ClInclude Include="include\OrderBook.h" />
     <ClInclude Include="include\OrderBookWorker.h" />
-    <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\OrderBookManager.h" />
     <ClInclude Include="include\Order.h" />
     <ClInclude Include="include\Stock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\OrderBook.cpp" />
     <ClCompile Include="src\OrderBookWorker.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\OrderBookManager.cpp" />
     <ClCompile Include="src\Order.cpp" />
   </ItemGroup>
   <ItemGroup>

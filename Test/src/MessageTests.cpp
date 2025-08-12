@@ -21,7 +21,7 @@ TEST(MessageTests, PlaceOrderMessageSerialization)
 	order1.Serialize(dataBuffer);
 	order2.Deserialize(dataBuffer);
 
-	EXPECT_EQ(order1.messageType, order2.messageType);
+	EXPECT_EQ(order1.GetMessageType(), order2.GetMessageType());
 	EXPECT_EQ(order1.symbol, order2.symbol);
 	EXPECT_EQ(order1.userID, order2.userID);
 	EXPECT_EQ(order1.quantity, order2.quantity);

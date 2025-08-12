@@ -13,7 +13,8 @@ namespace MatchingEngine
 			BBB,
 			CCC,
 			DDD,
-			EEE
+			EEE,
+			COUNT // For iteration purposes.
 		};
 
 		static const char* ToString(Symbol symbol)
@@ -23,7 +24,6 @@ namespace MatchingEngine
 			case Symbol::NA:
 				return "NA";
 				break;
-
 			case Symbol::AAA:
 				return "AAA";
 				break;

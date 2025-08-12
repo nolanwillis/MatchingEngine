@@ -17,15 +17,15 @@ namespace MatchingEngine
 		};
 
 		Stock::Symbol symbol;
-		unsigned int userID;
-		unsigned int quantity;
-		unsigned int isBuy;
 		float price;
+		unsigned int quantity;
+		unsigned int userID;
+		unsigned int isBuy;
 		Order::Type orderType;
 
 		Order();
-		Order(Stock::Symbol symbol, unsigned int userID, unsigned int quantity,
-			unsigned int isBuy, float limit, Order::Type orderType);
+		Order(Stock::Symbol symbol, float price, unsigned int quantity, 
+			unsigned int userID, unsigned int isBuy, Order::Type orderType);
 		Order(const Order& rhs);
 		Order& operator=(const Order& rhs);
 		virtual ~Order() = default;

@@ -6,7 +6,7 @@ class Message;
 class MessageHandler
 {
 public:
-	virtual void HandleMessage(Message* msg) = 0;
+	virtual void HandleMessage(const Message& msg) = 0;
 };
 
 #endif

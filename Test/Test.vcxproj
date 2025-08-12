@@ -141,7 +141,9 @@
     <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="src\LimitOrderTests.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MarketOrderTests.cpp" />
     <ClCompile Include="src\MessageTests.cpp" />
+    <ClCompile Include="src\OrderBookManagerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

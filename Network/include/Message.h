@@ -10,7 +10,6 @@ public:
 		Test,
 		PlaceOrder
 	};
-	Type messageType;
 
 	Message() = delete;
 	Message(Message::Type type);
@@ -26,7 +25,10 @@ public:
 	virtual size_t GetSerializedSize() const;
 	virtual void Print() const {};
 	
-	Type GetType() const { return messageType; };
+	Type GetMessageType() const { return messageType; };
+
+private:
+	Type messageType;
 };
 
 #endif
