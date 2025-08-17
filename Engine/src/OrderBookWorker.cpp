@@ -65,7 +65,7 @@ namespace MatchingEngine
 			{
 				return;
 			}
-			// Ensure an empty queue is not popped from.
+			// Ensure the queue is not empty.
 			if (orderQueue.empty())
 			{
 				continue;

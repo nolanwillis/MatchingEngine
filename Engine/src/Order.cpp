@@ -7,31 +7,34 @@ namespace MatchingEngine
 {
 	Order::Order()
 		:
-		Message(Message::Type::PlaceOrder),
+		Message(Message::Type::Order),
 		symbol(Stock::Symbol::NA),
 		price(0.0f),
 		quantity(0),
+		orderID(0),
 		userID(0),
 		isBuy(false),
 		orderType(Order::Type::Uninitialized)
 	{}
-	Order::Order(Stock::Symbol symbol, float price, unsigned int quantity, unsigned int userID, 
-		unsigned int isBuy, Order::Type orderType)
+	Order::Order(Stock::Symbol symbol, float price, unsigned int quantity, unsigned int orderID, 
+		unsigned int userID, unsigned int isBuy, Order::Type orderType)
 		:
-		Message(Message::Type::PlaceOrder),
+		Message(Message::Type::Order),
 		symbol(symbol),
 		price(price),
 		quantity(quantity),
+		orderID(orderID),
 		userID(userID),
 		isBuy(isBuy),
 		orderType(orderType)
 	{}
 	Order::Order(const Order& rhs)
 		:
-		Message(Message::Type::PlaceOrder),
+		Message(Message::Type::Order),
 		symbol(rhs.symbol),
 		price(rhs.price),
 		quantity(rhs.quantity),
+		orderID(rhs.orderID),
 		userID(rhs.userID),
 		isBuy(rhs.isBuy),
 		orderType(rhs.orderType)
@@ -43,6 +46,7 @@ namespace MatchingEngine
 			this->symbol = rhs.symbol;
 			this->price = rhs.price;
 			this->quantity = rhs.quantity;
+			this->orderID = rhs.orderID;
 			this->userID = rhs.userID;
 			this->isBuy = rhs.isBuy;
 			this->orderType = rhs.orderType;
@@ -57,47 +61,56 @@ namespace MatchingEngine
 
 		// symbol
 		memcpy_s(
-			buffer + sizeof(Type), 
+			buffer + sizeof(Type),
 			sizeof(Stock::Symbol),
-			&this->symbol, 
+			&this->symbol,
 			sizeof(Stock::Symbol)
 		);
 		// price
 		memcpy_s(
-			buffer + sizeof(Type) + sizeof(Stock::Symbol), 
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol),
 			sizeof(float),
-			&this->price, 
+			&this->price,
 			sizeof(float)
 		);
 		// quantity
 		memcpy_s(
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float),
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float),
 			sizeof(unsigned int),
-			&this->quantity, 
+			&this->quantity,
+			sizeof(unsigned int)
+		);
+		// orderID
+		memcpy_s(
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
+			sizeof(unsigned int),
+			sizeof(unsigned int),
+			&this->orderID,
 			sizeof(unsigned int)
 		);
 		// userID
 		memcpy_s(
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float) + sizeof(unsigned int),
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
+			sizeof(unsigned int) * 2,
 			sizeof(unsigned int),
-			&this->userID, 
+			&this->userID,
 			sizeof(unsigned int)
 		);
 		// isBuy
 		memcpy_s(
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-				sizeof(unsigned int) * 2,
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
+			sizeof(unsigned int) * 3,
 			sizeof(unsigned int),
-			&this->isBuy, 
+			&this->isBuy,
 			sizeof(unsigned int)
 		);
 		// orderType
 		memcpy_s(
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-				sizeof(unsigned int) * 3,
-			sizeof(Type),
-			&this->orderType, 
-			sizeof(Type)
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
+			sizeof(unsigned int) * 4,
+			sizeof(Order::Type),
+			&this->orderType,
+			sizeof(Order::Type)
 		);
 	}
 	void Order::Deserialize(char* buffer)
@@ -106,58 +119,68 @@ namespace MatchingEngine
 
 		// symbol
 		memcpy_s(
-			&this->symbol, 
+			&this->symbol,
 			sizeof(Stock::Symbol),
 			buffer + sizeof(Type),
 			sizeof(Stock::Symbol)
 		);
 		// price
 		memcpy_s(
-			&this->price, 
+			&this->price,
 			sizeof(float),
-			buffer + sizeof(Type) + sizeof(Stock::Symbol), 
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol),
 			sizeof(float)
 		);
 		// quantity
 		memcpy_s(
-			&this->quantity, 
+			&this->quantity,
 			sizeof(unsigned int),
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float),
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float),
 			sizeof(unsigned int)
 		);
+		// orderID
+		memcpy_s(
+			&this->orderID,
+			sizeof(unsigned int),
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
+			sizeof(unsigned int),
+			sizeof(unsigned int)
+		);
+
 		// userID
 		memcpy_s(
-			&this->userID, 
+			&this->userID,
 			sizeof(unsigned int),
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float) + sizeof(unsigned int),
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
+			sizeof(unsigned int) * 2,
 			sizeof(unsigned int)
 		);
 		// isBuy
 		memcpy_s(
 			&this->isBuy,
 			sizeof(unsigned int),
-			buffer + sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float) +
-				sizeof(unsigned int) * 2,
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
+			sizeof(unsigned int) * 3,
 			sizeof(unsigned int)
 		);
 		// orderType
 		memcpy_s(
-			&this->orderType, 
-			sizeof(Type),
-			buffer +  sizeof(Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-				sizeof(unsigned int) * 3,
-			sizeof(Type)
+			&this->orderType,
+			sizeof(Order::Type),
+			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
+			sizeof(unsigned int) * 4,
+			sizeof(Order::Type)
 		);
 	}
 	size_t Order::GetSerializedSize() const
 	{
-		return Message::GetSerializedSize() + sizeof(Stock::Symbol) + sizeof(float) + 
-			sizeof(unsigned int) * 3 + sizeof(Order::Type);
+		return Message::GetSerializedSize() + sizeof(Stock::Symbol) + sizeof(float) +
+			sizeof(unsigned int) * 4 + sizeof(Order::Type);
 	}
 	void Order::Print() const
 	{
-		printf("\t{ [Symbol]: %s [Price]: $%.4f [Quantity]: %u [User ID]: %u ", 
-			Stock::ToString(symbol), price, quantity, userID);
+		printf("\t{ [Symbol]: %s [Price]: $%.4f [Quantity]: %u [Order ID]: %u [User ID]: %u", 
+			Stock::ToString(symbol), price, quantity, orderID, userID);
 
 		if (orderType == Order::Type::Limit)
 		{

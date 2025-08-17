@@ -26,6 +26,18 @@
     <ClInclude Include="include\Stock.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Message.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EngineWorker.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Trade.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Order.cpp">
@@ -38,6 +50,18 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\OrderBookWorker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Message.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineWorker.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Trade.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

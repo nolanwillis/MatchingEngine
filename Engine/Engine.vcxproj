@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)Network\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)External\asio\include;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)Network\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)External\asio\include;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -137,22 +137,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\EngineWorker.h" />
+    <ClInclude Include="include\Message.h" />
     <ClInclude Include="include\OrderBook.h" />
     <ClInclude Include="include\OrderBookWorker.h" />
     <ClInclude Include="include\OrderBookManager.h" />
     <ClInclude Include="include\Order.h" />
     <ClInclude Include="include\Stock.h" />
+    <ClInclude Include="include\Trade.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\EngineWorker.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\Message.cpp" />
     <ClCompile Include="src\OrderBook.cpp" />
     <ClCompile Include="src\OrderBookWorker.cpp" />
     <ClCompile Include="src\OrderBookManager.cpp" />
     <ClCompile Include="src\Order.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Network\Network.vcxproj">
-      <Project>{c65a24ce-beff-4c25-b5d3-226e3a02dd1c}</Project>
-    </ProjectReference>
+    <ClCompile Include="src\Trade.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

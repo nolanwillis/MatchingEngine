@@ -13,23 +13,26 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\MessageTests.cpp">
-      <Filter>src\tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc">
       <Filter>src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\LimitOrderTests.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LimitOrderTests.cpp">
+      <Filter>src\tests</Filter>
     </ClCompile>
     <ClCompile Include="src\MarketOrderTests.cpp">
-      <Filter>src</Filter>
+      <Filter>src\tests</Filter>
     </ClCompile>
     <ClCompile Include="src\OrderBookManagerTests.cpp">
-      <Filter>src</Filter>
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MessageTests.cpp">
+      <Filter>src\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineTests.cpp">
+      <Filter>src\tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
