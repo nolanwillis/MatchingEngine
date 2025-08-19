@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "OrderBookManager.h"
+#include "Order.h"
 
 namespace MatchingEngine
 {
@@ -55,6 +56,11 @@ namespace MatchingEngine
 			);
 			workers.back()->Start();
 		}
+	}
+	unsigned int Engine::GetNextOrderID()
+	{
+		static std::atomic<unsigned int> counter(0);
+		return counter++;
 	}
 	void Engine::HandleMessage(connection_hdl handle, message_ptr message)
 	{

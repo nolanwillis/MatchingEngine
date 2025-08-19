@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <string>
+#include <atomic>
 
 namespace MatchingEngine
 {
@@ -11,13 +12,12 @@ namespace MatchingEngine
 		symbol(Stock::Symbol::NA),
 		price(0.0f),
 		quantity(0),
-		tradeID(0),
 		buyOrderID(0),
 		sellOrderID(0),
 		userID(0),
 		orderType(Order::Type::Uninitialized)
 	{}
-	Trade::Trade(Stock::Symbol symbol, float price, unsigned int quantity, unsigned int tradeID, 
+	Trade::Trade(Stock::Symbol symbol, float price, unsigned int quantity,
 		unsigned int buyOrderID, unsigned int sellOrderID, unsigned int userID, 
 		Order::Type orderType)
 		:
@@ -25,7 +25,6 @@ namespace MatchingEngine
 		symbol(symbol),
 		price(price),
 		quantity(quantity),
-		tradeID(tradeID),
 		buyOrderID(buyOrderID),
 		sellOrderID(sellOrderID),
 		userID(userID),
@@ -57,18 +56,10 @@ namespace MatchingEngine
 			&this->quantity,
 			sizeof(unsigned int)
 		);
-		// tradeID
-		memcpy_s(
-			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-			sizeof(unsigned int),
-			sizeof(unsigned int),
-			&this->tradeID,
-			sizeof(unsigned int)
-		);
 		// buyOrderID
 		memcpy_s(
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-			sizeof(unsigned int) * 2,
+			sizeof(unsigned int),
 			sizeof(unsigned int),
 			&this->buyOrderID,
 			sizeof(unsigned int)
@@ -76,7 +67,7 @@ namespace MatchingEngine
 		// sellUserID
 		memcpy_s(
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 3,
+			sizeof(unsigned int) * 2,
 			sizeof(unsigned int),
 			&this->sellOrderID,
 			sizeof(unsigned int)
@@ -84,7 +75,7 @@ namespace MatchingEngine
 		// userID
 		memcpy_s(
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 4,
+			sizeof(unsigned int) * 3,
 			sizeof(unsigned int),
 			&this->userID,
 			sizeof(unsigned int)
@@ -92,7 +83,7 @@ namespace MatchingEngine
 		// orderType
 		memcpy_s(
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 5,
+			sizeof(unsigned int) * 4,
 			sizeof(Order::Type),
 			&this->orderType,
 			sizeof(Order::Type)
@@ -123,20 +114,12 @@ namespace MatchingEngine
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float),
 			sizeof(unsigned int)
 		);
-		// tadeID
-		memcpy_s(
-			&this->tradeID,
-			sizeof(unsigned int),
-			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-			sizeof(unsigned int),
-			sizeof(unsigned int)
-		);
 		// buyOrderID
 		memcpy_s(
 			&this->buyOrderID,
 			sizeof(unsigned int),
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 2,
+			sizeof(unsigned int),
 			sizeof(unsigned int)
 		);
 		// sellOrderID
@@ -144,7 +127,7 @@ namespace MatchingEngine
 			&this->sellOrderID,
 			sizeof(unsigned int),
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 3,
+			sizeof(unsigned int) * 2,
 			sizeof(unsigned int)
 		);
 		// userID
@@ -152,7 +135,7 @@ namespace MatchingEngine
 			&this->userID,
 			sizeof(unsigned int),
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 4,
+			sizeof(unsigned int) * 3,
 			sizeof(unsigned int)
 		);
 		// orderType
@@ -160,19 +143,20 @@ namespace MatchingEngine
 			&this->orderType,
 			sizeof(Order::Type),
 			buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 5,
+			sizeof(unsigned int) * 4,
 			sizeof(Order::Type)
 		);
 	}
 	size_t Trade::GetSerializedSize() const
 	{
 		return Message::GetSerializedSize() + sizeof(Stock::Symbol) + sizeof(float) +
-			sizeof(unsigned int) * 5 + sizeof(Order::Type);
+			sizeof(unsigned int) * 4 + sizeof(Order::Type);
 	}
 	void Trade::Print() const
 	{
-		printf("\t{ [Symbol]: %s [Price]: $%.4f [Quantity]: %u [Trade ID]: %u [Buy Order ID]: %u [Sell Order ID] %u [User ID] %u",
-			Stock::ToString(symbol), price, quantity, tradeID, buyOrderID, sellOrderID, userID);
+		printf("\t{ [Symbol]: %s [Price]: $%.4f [Quantity]: %u [Buy Order ID]: %u" 
+			"[Sell Order ID] %u [User ID] %u",
+			Stock::ToString(symbol), price, quantity, buyOrderID, sellOrderID, userID);
 
 		if (orderType == Order::Type::Limit)
 		{

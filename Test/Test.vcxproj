@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)Engine\include;$(SolutionDir)External\asio\include;$(SolutionDir)External\googletest\googletest;$(SolutionDir)External\googletest\googletest\include;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)Database\include;$(SolutionDir)Engine\include;$(SolutionDir)External\asio\include;$(SolutionDir)External\googletest\googletest;$(SolutionDir)External\googletest\googletest\include;$(SolutionDir)External\sqlite;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)Engine\include;$(SolutionDir)External\asio\include;$(SolutionDir)External\googletest\googletest;$(SolutionDir)External\googletest\googletest\include;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)Database\include;$(SolutionDir)Engine\include;$(SolutionDir)External\asio\include;$(SolutionDir)External\googletest\googletest;$(SolutionDir)External\googletest\googletest\include;$(SolutionDir)External\sqlite;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc" />
+    <ClCompile Include="src\DatabaseTests.cpp" />
     <ClCompile Include="src\EngineTests.cpp" />
     <ClCompile Include="src\MessageTests.cpp" />
     <ClCompile Include="src\LimitOrderTests.cpp" />

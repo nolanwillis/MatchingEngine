@@ -39,12 +39,7 @@ namespace MatchingEngine
 			// process anything just exit.
 			if (stopSignal.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
 			{
-				return;
-			}
-			// Ensure the queue is not empty.
-			if (engine.routingQueue.empty())
-			{
-				continue;
+				break;
 			}
 
 			OrderBookManager::GetInstance().AddMessage(std::move(engine.routingQueue.front()));

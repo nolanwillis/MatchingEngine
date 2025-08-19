@@ -1,4 +1,5 @@
 #include "OrderBookWorker.h"
+#include "DatabaseManager.h"
 #include "OrderBook.h"
 
 namespace MatchingEngine
@@ -63,12 +64,7 @@ namespace MatchingEngine
 			// process anything just exit.
 			if (stopSignal.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
 			{
-				return;
-			}
-			// Ensure the queue is not empty.
-			if (orderQueue.empty())
-			{
-				continue;
+				break;
 			}
 
 			std::unique_ptr<Order> newOrder = std::move(orderQueue.front());
@@ -89,6 +85,7 @@ namespace MatchingEngine
 
 	void OrderBookWorker::AddLimitOrder(std::unique_ptr<Order> order)
 	{
+		DatabaseManager& dbManagerInstance = DatabaseManager::GetInstance();
 		auto& sellOrders = orderBook.sellOrders;
 		auto& buyOrders = orderBook.buyOrders;
 
@@ -120,6 +117,10 @@ namespace MatchingEngine
 					
 					order->quantity -= quantitySold;
 					sellOrder->quantity -= quantitySold;
+
+					// Log trade to the database.
+					dbManagerInstance.AddTrade(order->symbol, sellOrder->price, quantitySold, 
+						order->orderID, sellOrder->orderID, order->userID, order->orderType);
 					
 					if (sellOrder->quantity == 0)
 					{
@@ -176,6 +177,10 @@ namespace MatchingEngine
 					order->quantity -= quantitySold;
 					buyOrder->quantity -= quantitySold;
 
+					// Log trade to the database.
+					dbManagerInstance.AddTrade(order->symbol, buyOrder->price, quantitySold,
+						buyOrder->orderID, order->orderID, order->userID, order->orderType);
+
 					if (buyOrder->quantity == 0)
 					{
 						orderItr = priceLevel.erase(orderItr);
@@ -205,6 +210,8 @@ namespace MatchingEngine
 	}
 	void OrderBookWorker::ExecuteMatchOrder(std::unique_ptr<Order> order)
 	{
+		DatabaseManager& dbManagerInstance = DatabaseManager::GetInstance();
+
 		auto& sellOrders = orderBook.sellOrders;
 		auto& buyOrders = orderBook.buyOrders;
 
@@ -230,6 +237,10 @@ namespace MatchingEngine
 
 					order->quantity -= quantitySold;
 					sellOrder->quantity -= quantitySold;
+
+					// Log trade to the database.
+					dbManagerInstance.AddTrade(order->symbol, sellOrder->price, quantitySold,
+						order->orderID, sellOrder->orderID, order->userID, order->orderType);
 
 					if (sellOrder->quantity == 0)
 					{
@@ -269,6 +280,10 @@ namespace MatchingEngine
 
 					order->quantity -= quantitySold;
 					buyOrder->quantity -= quantitySold;
+
+					// Log trade to the database.
+					dbManagerInstance.AddTrade(order->symbol, buyOrder->price, quantitySold,
+						buyOrder->orderID, order->orderID, order->userID, order->orderType);
 
 					if (buyOrder->quantity == 0)
 					{

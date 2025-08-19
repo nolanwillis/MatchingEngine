@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "Order.h"
+#include "DatabaseManager.h"
 
 // Make the private field of OrderBookManager public.
 #define private public
@@ -22,6 +23,7 @@ protected:
 
 	void SetUp() override
 	{
+		DatabaseManager::Create();
 		OrderBookManager::Create();
 
 		std::shared_future<void> stopFuture = engine.stopSignal.get_future().share();
@@ -39,6 +41,7 @@ protected:
 	void TearDown() override
 	{
 		OrderBookManager::Destroy();
+		DatabaseManager::Destroy();
 	}
 };
 

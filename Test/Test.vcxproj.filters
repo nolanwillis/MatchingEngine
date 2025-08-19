@@ -1,38 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="src">
+    <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="src\core">
+    <Filter Include="Source\Core">
       <UniqueIdentifier>{389af181-c5de-4a29-bb38-38b2a5ca33ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\tests">
+    <Filter Include="Source\Tests">
       <UniqueIdentifier>{b6493a1f-043d-4420-9d28-7c8c40e84804}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc">
-      <Filter>src\core</Filter>
+      <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>src\core</Filter>
+      <Filter>Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\LimitOrderTests.cpp">
-      <Filter>src\tests</Filter>
+      <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\MarketOrderTests.cpp">
-      <Filter>src\tests</Filter>
+      <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\OrderBookManagerTests.cpp">
-      <Filter>src\tests</Filter>
+      <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\MessageTests.cpp">
-      <Filter>src\tests</Filter>
+      <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\EngineTests.cpp">
-      <Filter>src\tests</Filter>
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DatabaseTests.cpp">
+      <Filter>Source\Tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

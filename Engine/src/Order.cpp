@@ -1,6 +1,7 @@
 #include "Order.h"
 
 #include <assert.h>
+#include <atomic>
 #include <string>
 
 namespace MatchingEngine

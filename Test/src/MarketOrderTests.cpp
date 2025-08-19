@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "Stock.h"
 #include "Order.h"
+#include "DatabaseManager.h"
 
 // Make the private fields of OrderBook public.
 #define private public
@@ -19,6 +20,8 @@ protected:
 
 	void SetUp() override
 	{
+		DatabaseManager::Create();
+
 		this->orderBook = new OrderBook(Stock::Symbol::AAA, stopSignal.get_future().share());
 	}
 
@@ -26,6 +29,8 @@ protected:
 	{
 		stopSignal.set_value();
 		delete orderBook;
+
+		DatabaseManager::Destroy();
 	}
 };
 

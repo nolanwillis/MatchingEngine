@@ -1,68 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="include">
+    <Filter Include="Include">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="src">
+    <Filter Include="Source">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Include\Database">
+      <UniqueIdentifier>{ad1632d3-74f6-4930-885a-44775800d767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\OrderBook">
+      <UniqueIdentifier>{e6503b2f-3e51-4c66-b96a-8e8d8def8de4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Messages">
+      <UniqueIdentifier>{964b3396-1520-4d06-b673-84ef2b553719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Database">
+      <UniqueIdentifier>{3685864d-1916-461f-9180-e36009522721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Messages">
+      <UniqueIdentifier>{54cb288a-f7c5-4bd6-b100-517efe41d50e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\OrderBook">
+      <UniqueIdentifier>{9a639239-a1ec-4be1-a00e-9a3714fa9511}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Order.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\DatabaseManager.h">
+      <Filter>Include\Database</Filter>
     </ClInclude>
     <ClInclude Include="include\OrderBook.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OrderBookWorker.h">
-      <Filter>include</Filter>
+      <Filter>Include\OrderBook</Filter>
     </ClInclude>
     <ClInclude Include="include\OrderBookManager.h">
-      <Filter>include</Filter>
+      <Filter>Include\OrderBook</Filter>
     </ClInclude>
-    <ClInclude Include="include\Stock.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\OrderBookWorker.h">
+      <Filter>Include\OrderBook</Filter>
     </ClInclude>
     <ClInclude Include="include\Message.h">
-      <Filter>include</Filter>
+      <Filter>Include\Messages</Filter>
     </ClInclude>
-    <ClInclude Include="include\Engine.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\Order.h">
+      <Filter>Include\Messages</Filter>
     </ClInclude>
-    <ClInclude Include="include\EngineWorker.h">
-      <Filter>include</Filter>
+    <ClInclude Include="include\Stock.h">
+      <Filter>Include\Messages</Filter>
     </ClInclude>
     <ClInclude Include="include\Trade.h">
-      <Filter>include</Filter>
+      <Filter>Include\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EngineWorker.h">
+      <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Order.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OrderBookManager.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OrderBook.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OrderBookWorker.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Message.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine.cpp">
-      <Filter>src</Filter>
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="src\EngineWorker.cpp">
-      <Filter>src</Filter>
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sqlite\sqlite3.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DatabaseManager.cpp">
+      <Filter>Source\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Message.cpp">
+      <Filter>Source\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Order.cpp">
+      <Filter>Source\Messages</Filter>
     </ClCompile>
     <ClCompile Include="src\Trade.cpp">
-      <Filter>src</Filter>
+      <Filter>Source\Messages</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrderBook.cpp">
+      <Filter>Source\OrderBook</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrderBookManager.cpp">
+      <Filter>Source\OrderBook</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrderBookWorker.cpp">
+      <Filter>Source\OrderBook</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "DatabaseManager.h"
 
 // Make the private field of OrderBookManager public.
 #define private public
@@ -12,20 +13,16 @@ class OrderBookManagerTests : public ::testing::Test
 protected:
 	void SetUp() override
 	{
+		DatabaseManager::Create();
 		OrderBookManager::Create();
 	}
 
 	void TearDown() override
 	{
 		OrderBookManager::Destroy();
+		DatabaseManager::Destroy();
 	}
 };
-
-//TEST_F(OrderBookManagerTests, All)
-//{
-//	auto& instance = OrderBookManager::GetInstance();
-//	EXPECT_TRUE(instance.CanProcessOrdersTest());
-//}
 
 TEST_F(OrderBookManagerTests, CreatesALLOrderBooks)
 {

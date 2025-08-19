@@ -48,6 +48,7 @@ namespace MatchingEngine
 
 		void HandleMessage(connection_hdl handle, message_ptr message);
 		void CreateWorkers(int numWorkers);
+		unsigned int GetNextOrderID();
 	};
 }
 

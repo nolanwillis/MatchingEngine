@@ -13,8 +13,8 @@ TEST(MessageTests, OrderMessageSerialization)
 	order1.symbol = Stock::Symbol::AAA;
 	order1.price = 1200.0f;
 	order1.quantity = 50;
-	order1.orderID = 4598392040;
-	order1.userID = 38950493040;
+	order1.orderID = 4598;
+	order1.userID = 3895;
 	order1.isBuy = 0;
 	order1.orderType = Order::Type::Limit;
 
@@ -43,10 +43,9 @@ TEST(MessageTests, TradeMessageSerialization)
 	trade1.symbol = Stock::Symbol::AAA;
 	trade1.price = 1200.0f;
 	trade1.quantity = 50;
-	trade1.tradeID = 3030349430;
-	trade1.buyOrderID = 9060493495;
-	trade1.sellOrderID = 4598392040;
-	trade1.userID = 38950493040;
+	trade1.buyOrderID = 9060;
+	trade1.sellOrderID = 4598;
+	trade1.userID = 3895;
 	trade1.orderType = Order::Type::Limit;
 
 	char* dataBuffer = new char[trade1.GetSerializedSize()];
@@ -58,7 +57,6 @@ TEST(MessageTests, TradeMessageSerialization)
 	EXPECT_EQ(trade1.symbol, trade2.symbol);
 	EXPECT_EQ(trade1.price, trade2.price);
 	EXPECT_EQ(trade1.quantity, trade2.quantity);
-	EXPECT_EQ(trade1.tradeID, trade2.tradeID);
 	EXPECT_EQ(trade1.buyOrderID, trade2.buyOrderID);
 	EXPECT_EQ(trade1.sellOrderID, trade2.sellOrderID);
 	EXPECT_EQ(trade1.userID, trade2.userID);
