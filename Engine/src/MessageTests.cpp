@@ -1,9 +1,8 @@
-#include "gtest/gtest.h"
 #include "Order.h"
 #include "Trade.h"
 #include "Stock.h"
 
-using namespace MatchingEngine;
+#include <gtest/gtest.h>
 
 TEST(MessageTests, OrderMessageSerialization)
 {

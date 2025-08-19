@@ -5,32 +5,29 @@
 #include "Stock.h"
 #include "Order.h"
 
-namespace MatchingEngine
+class Trade : public Message
 {
-	class Trade : public Message
-	{
-	public:
-		Stock::Symbol symbol;
-		float price;
-		unsigned int quantity;
-		unsigned int buyOrderID;
-		unsigned int sellOrderID;
-		unsigned int userID;
-		Order::Type orderType;
+public:
+	Stock::Symbol symbol;
+	float price;
+	unsigned int quantity;
+	unsigned int buyOrderID;
+	unsigned int sellOrderID;
+	unsigned int userID;
+	Order::Type orderType;
 
-		Trade();
-		Trade(Stock::Symbol symbol, float price, unsigned int quantity, 
-			unsigned int buyOrderID, unsigned int sellOrderID, 
-			unsigned int userID, Order::Type orderType);
-		Trade(const Trade& rhs) = default;
-		Trade& operator=(const Trade& rhs) = default;
-		virtual ~Trade() = default;
+	Trade();
+	Trade(Stock::Symbol symbol, float price, unsigned int quantity, 
+		unsigned int buyOrderID, unsigned int sellOrderID, 
+		unsigned int userID, Order::Type orderType);
+	Trade(const Trade& rhs) = default;
+	Trade& operator=(const Trade& rhs) = default;
+	virtual ~Trade() = default;
 
-		virtual void Serialize(char* buffer) override;
-		virtual void Deserialize(char* buffer) override;
-		virtual size_t GetSerializedSize() const override;
-		virtual void Print() const override;
-	};
-}
+	virtual void Serialize(char* buffer) override;
+	virtual void Deserialize(char* buffer) override;
+	virtual size_t GetSerializedSize() const override;
+	virtual void Print() const override;
+};
 
 #endif

@@ -1,12 +1,7 @@
-#include "gtest/gtest.h"
 #include "DatabaseManager.h"
-
-// Make the private field of OrderBookManager public.
-#define private public
 #include "OrderBookManager.h"
-#undef private
 
-using namespace MatchingEngine;
+#include <gtest/gtest.h>
 
 class OrderBookManagerTests : public ::testing::Test
 {
@@ -24,7 +19,7 @@ protected:
 	}
 };
 
-TEST_F(OrderBookManagerTests, CreatesALLOrderBooks)
+TEST_F(OrderBookManagerTests, CreatesAllOrderBooks)
 {
 	OrderBookManager& instance = OrderBookManager::GetInstance();
 
@@ -39,8 +34,6 @@ TEST_F(OrderBookManagerTests, CreatesALLOrderBooks)
 
 TEST_F(OrderBookManagerTests, CanProcessOrders)
 {
-	auto& instance = OrderBookManager::GetInstance();
-
 	std::unique_ptr<Order> buyOrder1 =
 		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 0, 0, 1, Order::Type::Limit);
 	std::unique_ptr<Order> buyOrder2 =
@@ -63,21 +56,21 @@ TEST_F(OrderBookManagerTests, CanProcessOrders)
 	std::unique_ptr<Order> sellOrder5 =
 		std::make_unique<Order>(Stock::Symbol::EEE, 200, 50, 9, 9, 0, Order::Type::Limit);
 
-	instance.AddMessage(std::move(buyOrder1));
-	instance.AddMessage(std::move(buyOrder2));
-	instance.AddMessage(std::move(buyOrder3));
-	instance.AddMessage(std::move(buyOrder4));
-	instance.AddMessage(std::move(buyOrder5));
-	instance.AddMessage(std::move(sellOrder1));
-	instance.AddMessage(std::move(sellOrder2));
-	instance.AddMessage(std::move(sellOrder3));
-	instance.AddMessage(std::move(sellOrder4));
-	instance.AddMessage(std::move(sellOrder5));
+	OrderBookManager::AddMessage(std::move(buyOrder1));
+	OrderBookManager::AddMessage(std::move(buyOrder2));
+	OrderBookManager::AddMessage(std::move(buyOrder3));
+	OrderBookManager::AddMessage(std::move(buyOrder4));
+	OrderBookManager::AddMessage(std::move(buyOrder5));
+	OrderBookManager::AddMessage(std::move(sellOrder1));
+	OrderBookManager::AddMessage(std::move(sellOrder2));
+	OrderBookManager::AddMessage(std::move(sellOrder3));
+	OrderBookManager::AddMessage(std::move(sellOrder4));
+	OrderBookManager::AddMessage(std::move(sellOrder5));
 
 	// Wait for transactions to be processed. 
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-	for (auto& [symbol, orderBook] : instance.orderBooks)
+	for (auto& [symbol, orderBook] : OrderBookManager::instance->orderBooks)
 	{
 		Order* buyOrder = orderBook.buyOrders.at(100).front().get();
 		Order* sellOrder = orderBook.sellOrders.at(200).front().get();

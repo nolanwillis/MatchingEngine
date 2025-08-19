@@ -91,5 +91,29 @@
     <ClCompile Include="src\OrderBookWorker.cpp">
       <Filter>Source\OrderBook</Filter>
     </ClCompile>
+    <ClCompile Include="src\LimitOrderTests.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DatabaseTests.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineTests.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MarketOrderTests.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MessageTests.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrderBookManagerTests.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

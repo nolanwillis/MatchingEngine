@@ -9,39 +9,36 @@
 #include <future>
 #include <condition_variable>
 
-namespace MatchingEngine
+class OrderBook;
+
+class OrderBookWorker
 {
-	class OrderBook;
+public:
+	OrderBookWorker() = delete;
+	OrderBookWorker(OrderBook& orderBook, std::shared_future<void> stopSignal);
+	OrderBookWorker(const OrderBookWorker& rhs) = delete;
+	OrderBookWorker& operator= (const OrderBookWorker& rhs) = delete;
+	~OrderBookWorker();
 
-	class OrderBookWorker
-	{
-	public:
-		OrderBookWorker() = delete;
-		OrderBookWorker(OrderBook& orderBook, std::shared_future<void> stopSignal);
-		OrderBookWorker(const OrderBookWorker& rhs) = delete;
-		OrderBookWorker& operator= (const OrderBookWorker& rhs) = delete;
-		~OrderBookWorker();
+	void Start();
+	void AddOrder(std::unique_ptr<Order> order);
+	void WaitUntilIdle();
 
-		void Start();
-		void AddOrder(std::unique_ptr<Order> order);
-		void WaitUntilIdle();
+	void operator()();
 
-		void operator()();
+private:
+	OrderBook& orderBook;
 
-	private:
-		OrderBook& orderBook;
+	std::shared_future<void> stopSignal;
+	
+	std::queue<std::unique_ptr<Order>> orderQueue;
+	std::mutex orderQueueMtx;
 
-		std::shared_future<void> stopSignal;
-		
-		std::queue<std::unique_ptr<Order>> orderQueue;
-		std::mutex orderQueueMtx;
+	std::condition_variable cv;
+	std::thread thread;
 
-		std::condition_variable cv;
-		std::thread thread;
-
-		void AddLimitOrder(std::unique_ptr<Order> order);
-		void ExecuteMatchOrder(std::unique_ptr<Order> order);
-	};
-}
+	void AddLimitOrder(std::unique_ptr<Order> order);
+	void ExecuteMatchOrder(std::unique_ptr<Order> order);
+};
 
 #endif

@@ -3,77 +3,75 @@
 
 #include <assert.h>
 
-namespace MatchingEngine
-{
-	OrderBookManager* OrderBookManager::instance = nullptr;
+OrderBookManager* OrderBookManager::instance = nullptr;
 
-	OrderBookManager::OrderBookManager()
+OrderBookManager::OrderBookManager()
+{
+	CreateOrderBooks();
+}
+OrderBookManager::~OrderBookManager()
+{
+	stopSignal.set_value();
+}
+
+void OrderBookManager::Create()
+{
+	if (!instance) 
 	{
-		CreateOrderBooks();
+		instance = new OrderBookManager();
 	}
-	OrderBookManager::~OrderBookManager()
-	{
-		stopSignal.set_value();
+}
+void OrderBookManager::Destroy() 
+{
+	if (instance) 
+	{ 
+		delete instance;
+		instance = nullptr;
 	}
-	
-	void OrderBookManager::Create()
+	else
 	{
-		if (!instance) 
-		{
-			instance = new OrderBookManager();
-		}
-	}
-	void OrderBookManager::Destroy() 
-	{
-		if (instance) 
-		{ 
-			delete instance;
-			instance = nullptr;
-		}
-		else
-		{
-			assert(false);
-		}
-	}
-	OrderBookManager& OrderBookManager::GetInstance()
-	{
-		if (instance)
-		{
-			return *instance;
-		}
 		assert(false);
 	}
+}
 
-	void OrderBookManager::AddMessage(std::unique_ptr<Message> message)
+void OrderBookManager::AddMessage(std::unique_ptr<Message> message)
+{
+	OrderBookManager& instance = OrderBookManager::GetInstance();
+
+	switch (message->GetMessageType())
 	{
-		//OrderBookManager& instance = OrderBookManager::GetInstance();
-
-		switch (message->GetMessageType())
-		{
-		case Message::Type::Order: 
-		{
-			std::unique_ptr<Order> orderPtr((Order*)message.release());
-			HandleOrder(std::move(orderPtr));
-			break;
-		}
-		default:
-			break;
-		}
-	}
-
-	void OrderBookManager::HandleOrder(std::unique_ptr<Order> order)
+	case Message::Type::Order: 
 	{
-		auto& orderBook = orderBooks.at(order->symbol);
-		orderBook.Add(std::move(order));
+		std::unique_ptr<Order> orderPtr((Order*)message.release());
+		instance.HandleOrder(std::move(orderPtr));
+		break;
 	}
-	void OrderBookManager::CreateOrderBooks()
-	{
-		std::shared_future<void> future = stopSignal.get_future().share();
+	default:
+		break;
+	}
+}
 
-		for (int i = 1; i < (int)Stock::Symbol::COUNT; i++)
-		{
-			Stock::Symbol currentSymbol = (Stock::Symbol)i;
-			orderBooks.try_emplace(currentSymbol, currentSymbol, future);
-		}	
+OrderBookManager& OrderBookManager::GetInstance()
+{
+	if (instance)
+	{
+		return *instance;
 	}
+	assert(false);
+}
+
+void OrderBookManager::HandleOrder(std::unique_ptr<Order> order)
+{
+	auto& orderBook = orderBooks.at(order->symbol);
+	orderBook.Add(std::move(order));
+}
+void OrderBookManager::CreateOrderBooks()
+{
+	std::shared_future<void> future = stopSignal.get_future().share();
+
+	for (int i = 1; i < (int)Stock::Symbol::COUNT; i++)
+	{
+		Stock::Symbol currentSymbol = (Stock::Symbol)i;
+		orderBooks.try_emplace(currentSymbol, currentSymbol, future);
+	}	
 }

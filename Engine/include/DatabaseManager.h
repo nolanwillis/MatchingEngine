@@ -7,49 +7,50 @@
 
 #include <condition_variable>
 #include <future>
+#include <gtest/gtest.h>
 #include <queue>
 #include <mutex>
 #include <string>
 #include <thread>
 
-namespace MatchingEngine
+class DatabaseTests;
+class Trade;
+
+class DatabaseManager
 {
-	class Trade;
+public:
+	FRIEND_TEST(DatabaseTests, CanAddAndGetTrade);
 
-	class DatabaseManager
-	{
-	public:
-		static void Create();
-		static void Destroy();
-		static DatabaseManager& GetInstance();
+	static void Create();
+	static void Destroy();
 
-		void AddTrade(Stock::Symbol symbol, float price, unsigned int quantity,
-			unsigned int buyOrderID, unsigned int sellOrderID, unsigned int userID, 
-			Order::Type orderType);
-		Trade GetTrade(const unsigned int userID) const;
-		void WaitUntilWriterIsIdle();
+	static void AddTrade(Stock::Symbol symbol, float price, unsigned int quantity,
+		unsigned int buyOrderID, unsigned int sellOrderID, unsigned int userID, 
+		Order::Type orderType);
+	static Trade GetTrade(const unsigned int userID);
+	static void WaitUntilWriterIsIdle();
 
+private:
+	static DatabaseManager* instance;
+	
+	std::string dbPath;
+	::sqlite3* database;
 
-	private:
-		static DatabaseManager* instance;
-		
-		std::string dbPath;
-		::sqlite3* database;
+	std::atomic<bool> shouldStopWriting;
+	std::queue<std::unique_ptr<Trade>> tradeQueue;
+	std::mutex tradeQueueMtx;
+	std::condition_variable tradeQueueCV;
+	std::thread tradeWriterThread;
+	
+	static DatabaseManager& GetInstance();
 
-		std::atomic<bool> shouldStopWriting;
-		std::queue<std::unique_ptr<Trade>> tradeQueue;
-		std::mutex tradeQueueMtx;
-		std::condition_variable tradeQueueCV;
-		std::thread tradeWriterThread;
+	DatabaseManager();
+	DatabaseManager(const DatabaseManager& rhs) = delete;
+	DatabaseManager& operator=(const DatabaseManager& rhs) = delete;
+	~DatabaseManager();
 
-		DatabaseManager();
-		DatabaseManager(const DatabaseManager& rhs) = delete;
-		DatabaseManager& operator=(const DatabaseManager& rhs) = delete;
-		~DatabaseManager();
-
-		void SetupTables();
-		void WriteTradeToDatabase();
-	};
-}
+	void SetupTables();
+	void WriteTradeToDatabase();
+};
 
 #endif

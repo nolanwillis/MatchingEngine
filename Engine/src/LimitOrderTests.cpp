@@ -1,15 +1,9 @@
-#include "gtest/gtest.h"
-#include "Stock.h"
 #include "DatabaseManager.h"
-
-// Make the private fields of OrderBook public.
-#define private public
 #include "OrderBook.h"
-#undef private
+#include "Stock.h"
 
 #include <deque>
-
-using namespace MatchingEngine;
+#include <gtest/gtest.h>
 
 class LimitOrderTests : public ::testing::Test
 {

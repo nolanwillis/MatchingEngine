@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -104,11 +104,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)External\asio\include;$(SolutionDir)External\sqlite;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)External\asio\include;$(SolutionDir)External\googletest\googletest;$(SolutionDir)External\googletest\googletest\include;$(SolutionDir)External\sqlite;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -120,13 +120,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)External\asio\include;$(SolutionDir)External\sqlite;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)External\asio\include;$(SolutionDir)External\googletest\googletest;$(SolutionDir)External\googletest\googletest\include;$(SolutionDir)External\sqlite;$(SolutionDir)External\websocketpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -149,12 +149,20 @@
     <ClInclude Include="include\Trade.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc" />
     <ClCompile Include="..\External\sqlite\sqlite3.c" />
     <ClCompile Include="src\DatabaseManager.cpp" />
+    <ClCompile Include="src\DatabaseTests.cpp" />
+    <ClCompile Include="src\EngineTests.cpp" />
     <ClCompile Include="src\EngineWorker.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\LimitOrderTests.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MarketOrderTests.cpp" />
     <ClCompile Include="src\Message.cpp" />
+    <ClCompile Include="src\MessageTests.cpp" />
     <ClCompile Include="src\OrderBook.cpp" />
+    <ClCompile Include="src\OrderBookManagerTests.cpp" />
     <ClCompile Include="src\OrderBookWorker.cpp" />
     <ClCompile Include="src\OrderBookManager.cpp" />
     <ClCompile Include="src\Order.cpp" />

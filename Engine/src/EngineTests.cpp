@@ -1,20 +1,10 @@
-#include "gtest/gtest.h"
-#include "Order.h"
 #include "DatabaseManager.h"
-
-// Make the private field of OrderBookManager public.
-#define private public
-#include "OrderBookManager.h"
-#undef private
-
-// Make the private fields of Engine public.
-#define private public
 #include "Engine.h"
-#undef private
+#include "Order.h"
+#include "OrderBookManager.h"
 
+#include <gtest/gtest.h>
 #include <string>
-
-using namespace MatchingEngine;
 
 class EngineTests : public ::testing::Test
 {
@@ -134,15 +124,13 @@ TEST_F(EngineTests, WebsocketMessageWorks)
 	// Need to wait for one of the OrderBookWorkers.
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-	auto& instance = OrderBookManager::GetInstance();
-
-	Order* buyOrderAAA = instance.orderBooks.at(Stock::Symbol::AAA)
+	Order* buyOrderAAA = OrderBookManager::instance->orderBooks.at(Stock::Symbol::AAA)
 		.buyOrders.at(100).front().get();
-	Order* buyOrderBBB = instance.orderBooks.at(Stock::Symbol::BBB)
+	Order* buyOrderBBB = OrderBookManager::instance->orderBooks.at(Stock::Symbol::BBB)
 		.buyOrders.at(100).front().get();
-	Order* buyOrderCCC = instance.orderBooks.at(Stock::Symbol::CCC)
+	Order* buyOrderCCC = OrderBookManager::instance->orderBooks.at(Stock::Symbol::CCC)
 		.buyOrders.at(100).front().get();
-	Order* buyOrderDDD = instance.orderBooks.at(Stock::Symbol::DDD)
+	Order* buyOrderDDD = OrderBookManager::instance->orderBooks.at(Stock::Symbol::DDD)
 		.buyOrders.at(100).front().get();
 
 	EXPECT_TRUE

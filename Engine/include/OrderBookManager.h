@@ -6,37 +6,42 @@
 #include "Message.h"
 
 #include <condition_variable>
+#include <gtest/gtest.h>
 #include <future>
 #include <queue>
 #include <map>
 
-namespace MatchingEngine
+class EngineTests;
+class Order;
+class OrderBookManagerTests;
+
+class OrderBookManager
 {
-	class Order;
+public:
+	FRIEND_TEST(EngineTests, WebsocketMessageWorks);
+	FRIEND_TEST(OrderBookManagerTests, CreatesAllOrderBooks);
+	FRIEND_TEST(OrderBookManagerTests, CanProcessOrders);
 
-	class OrderBookManager
-	{
-	public:
-		static void Create();
-		static void Destroy();
-		static OrderBookManager& GetInstance();
+	static void Create();
+	static void Destroy();
 
-		void AddMessage(std::unique_ptr<Message> msg);
-		
-	private:
-		static OrderBookManager* instance;
+	static void AddMessage(std::unique_ptr<Message> msg);
+	
+private:
+	static OrderBookManager* instance;
 
-		std::promise<void> stopSignal;
-		std::unordered_map<Stock::Symbol, OrderBook> orderBooks;
+	std::promise<void> stopSignal;
+	std::unordered_map<Stock::Symbol, OrderBook> orderBooks;
 
-		OrderBookManager();
-		OrderBookManager(const OrderBookManager& rhs) = delete;
-		OrderBookManager& operator=(const OrderBookManager& rhs) = delete;
-		~OrderBookManager();
-		
-		void HandleOrder(std::unique_ptr<Order> order);
-		void CreateOrderBooks();
-	};
-}
+	static OrderBookManager& GetInstance();
+	
+	OrderBookManager();
+	OrderBookManager(const OrderBookManager& rhs) = delete;
+	OrderBookManager& operator=(const OrderBookManager& rhs) = delete;
+	~OrderBookManager();
+	
+	void HandleOrder(std::unique_ptr<Order> order);
+	void CreateOrderBooks();
+};
 
 #endif

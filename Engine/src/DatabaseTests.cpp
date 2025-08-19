@@ -1,14 +1,8 @@
 #include "gtest/gtest.h"
+#include "DatabaseManager.h"
 #include "OrderBookManager.h"
 #include "Stock.h"
 #include "Trade.h"
-
-// Make the private fields of OrderBook public.
-#define private public
-#include "DatabaseManager.h"
-#undef private
-
-using namespace MatchingEngine;
 
 class DatabaseTests : public ::testing::Test
 {
@@ -28,7 +22,7 @@ protected:
 
 TEST_F(DatabaseTests, CanAddAndGetTrade)
 {
-	DatabaseManager& instance = DatabaseManager::GetInstance();
+	DatabaseManager& instance = *DatabaseManager::instance;
 
 	instance.AddTrade(Stock::Symbol::AAA, 100.0f, 50, 8403, 3402, 1024, Order::Type::Limit);
 	instance.WaitUntilWriterIsIdle();
@@ -46,5 +40,12 @@ TEST_F(DatabaseTests, CanAddAndGetTrade)
 
 //TEST_F(DatabaseTests, TradeAddedToDBOnMatch)
 //{
+//	std::unique_ptr<Order>buyOrder =
+//		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 1, 1, 1, Order::Type::Limit);
 //
+//	std::unique_ptr<Order>sellOrder =
+//		std::make_unique<Order>(Stock::Symbol::AAA, 300, 50, 4, 4, 0, Order::Type::Limit);
+//
+//	OrderBookManager::AddMessage(std::move(buyOrder));
+//	OrderBookManager::AddMessage(std::move(sellOrder));
 //}
