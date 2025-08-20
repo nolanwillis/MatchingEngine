@@ -1,50 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Order Submission</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Matching Engine Demo</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <h2>WebSocket Order Submission</h2>
-    <form id="orderForm">
-        <label>Symbol:</label>
-        <select id="symbol">
-            <option value="1">AAA</option>
-            <option value="2">BBB</option>
-            <option value="3">CCC</option>
-            <option value="4">DDD</option>
-            <option value="5">EEE</option>
-        </select>
+  <header class="app-header">
+    <div class="brand">Matching Engine Demo</div>
+    <nav class="nav">
+      <button class="nav-btn active" data-tab="place-order">Place Order</button>
+      <button class="nav-btn" data-tab="trades">Trades</button>
+      <button class="nav-btn" data-tab="orderbooks">Order Books</button>
+    </nav>
+    <div class="status">
+      <span id="wsStatus" class="dot dot-red"></span>
+      <span id="wsText">Disconnected</span>
+    </div>
+  </header>
 
-        <label>Price:</label>
-        <input type="number" step="0.01" id="price" required>
+  <main class="content">
 
-        <label>Quantity:</label>
-        <input type="number" id="quantity" required>
+    <!-- Place Order Menu -->
+    <section id="place-order" class="tab active">
+      <h2>Place Order</h2>
 
-        <label>Order ID:</label>
-        <input type="number" id="orderID" required>
+      <form id="orderForm" class="card form-card">
+        <input type="hidden" id="messageType" value="1" />
+        <div class="grid">
+          <label>
+            Symbol
+            <select id="symbol" required>
+              <option value="1">AAA</option>
+              <option value="2">BBB</option>
+              <option value="3">CCC</option>
+              <option value="4">DDD</option>
+              <option value="5">EEE</option>
+            </select>
+          </label>
 
-        <label>User ID:</label>
-        <input type="number" id="userID" required>
+          <label>
+            Order Type
+            <select id="orderType" required>
+              <option value="1">Market</option>
+              <option value="2" selected>Limit</option>
+            </select>
+          </label>
 
-        <label>Buy/Sell:</label>
-        <select id="isBuy">
-            <option value="1">Buy</option>
-            <option value="0">Sell</option>
-        </select>
+          <label>
+            Is Buy
+            <select id="isBuy" required>
+              <option value="1" selected>Buy</option>
+              <option value="0">Sell</option>
+            </select>
+          </label>
 
-        <label>Order Type:</label>
-        <select id="orderType">
-            <option value="1">Market</option>
-            <option value="2">Limit</option>
-        </select>
+          <label>
+            Price
+            <input id="price" type="number" step="0.01" min="0" value="100.00" required />
+          </label>
 
-        <button type="submit">Send Order</button>
-    </form>
+          <label>
+            Quantity
+            <input id="quantity" type="number" min="1" value="50" required />
+          </label>
 
-    <div id="status"></div>
-    <script src="script.js"></script>
+          <label>
+            Order ID
+            <input id="orderID" type="number" min="1" value="1" required />
+          </label>
+
+          <label>
+            User ID
+            <input id="userID" type="number" min="1" value="42" required />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Send Order</button>
+          <span id="status" class="muted"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- Trade Menu -->
+    <section id="trades" class="tab">
+      <h2>Trades</h2>
+      <div id="tradeContainer" class="stack"></div>
+    </section>
+
+    <!-- Order Book Menu -->
+    <section id="orderbooks" class="tab">
+      <h2>Order Books</h2>
+      <div class="card">
+        <p class="muted">Live order book view coming soon.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
+

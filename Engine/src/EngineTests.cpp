@@ -9,22 +9,23 @@
 class EngineTests : public ::testing::Test
 {
 protected:
-	Engine engine;
-
 	void SetUp() override
 	{
+		Engine::Create();
 		DatabaseManager::Create();
 		OrderBookManager::Create();
 
-		std::shared_future<void> stopFuture = engine.stopSignal.get_future().share();
+		Engine& instance = Engine::GetInstance();
+
+		std::shared_future<void> stopFuture = instance.stopSignal.get_future().share();
 
 		// Manually create four EngineWorkers.
 		for (int i = 0; i < 4; i++)
 		{
-			engine.workers.push_back(
-				std::make_unique<EngineWorker>(engine, stopFuture, engine.routingQueueCV)
+			instance.workers.push_back(
+				std::make_unique<EngineWorker>(instance, stopFuture, instance.routingQueueCV)
 			);
-			engine.workers.back()->Start();
+			instance.workers.back()->Start();
 		}
 	}
 
@@ -32,6 +33,7 @@ protected:
 	{
 		OrderBookManager::Destroy();
 		DatabaseManager::Destroy();
+		Engine::Destroy();
 	}
 };
 
@@ -54,6 +56,8 @@ private:
 
 TEST_F(EngineTests, WebsocketMessageWorks)
 {
+	Engine& instance = Engine::GetInstance();
+	
 	// Create the serialized orders.
 	std::unique_ptr<Order>newOrder1 =
 		std::make_unique<Order>(Stock::Symbol::AAA, 100, 25, 0, 0, 1, Order::Type::Limit);
@@ -108,13 +112,13 @@ TEST_F(EngineTests, WebsocketMessageWorks)
 
 		// Add the new message to the routing queue. 
 		{
-			std::lock_guard<std::mutex> lock(engine.routingQueueMtx);
-			engine.routingQueue.emplace(std::move(newMessage1));
-			engine.routingQueue.emplace(std::move(newMessage2));
-			engine.routingQueue.emplace(std::move(newMessage3));
-			engine.routingQueue.emplace(std::move(newMessage4));
+			std::lock_guard<std::mutex> lock(instance.routingQueueMtx);
+			instance.routingQueue.emplace(std::move(newMessage1));
+			instance.routingQueue.emplace(std::move(newMessage2));
+			instance.routingQueue.emplace(std::move(newMessage3));
+			instance.routingQueue.emplace(std::move(newMessage4));
 		}
-		engine.routingQueueCV.notify_all();
+		instance.routingQueueCV.notify_all();
 	}
 	catch (std::exception& e)
 	{

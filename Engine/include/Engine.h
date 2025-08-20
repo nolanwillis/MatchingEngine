@@ -22,6 +22,7 @@ using message_ptr = websocketpp::server<websocketpp::config::asio>::message_ptr;
 using WebSocketServer = websocketpp::server<websocketpp::config::asio>;
 
 class EngineTests;
+class Trade;
 
 class Engine
 {
@@ -31,14 +32,15 @@ public:
 	friend class ::EngineTests;
 	FRIEND_TEST(EngineTests, WebsocketMessageWorks);
 
-	Engine();
-	Engine(const Engine& rhs) = delete;
-	Engine& operator=(const Engine& rhs) = delete;
-	~Engine();
+	static void Create();
+	static void Destroy();
 
-	void Run(uint16_t port, int threadCount = 4);
+	static void Run(uint16_t port, int threadCount = 4);
+	static void BroadcastTrade(Trade& trade);
 
 private:
+	static Engine* instance;
+
 	WebSocketServer webSocketServer;
 	std::set<connection_hdl, std::owner_less<connection_hdl>> connections;
 	std::mutex connectionMtx;
@@ -50,9 +52,15 @@ private:
 	std::vector<std::unique_ptr<EngineWorker>> workers;
 	std::promise<void> stopSignal; 
 
+	static Engine& GetInstance();
+	
+	Engine();
+	Engine(const Engine& rhs) = delete;
+	Engine& operator=(const Engine& rhs) = delete;
+	~Engine();
+	
 	void HandleMessage(connection_hdl handle, message_ptr message);
 	void CreateWorkers(int numWorkers);
-	unsigned int GetNextOrderID();
 };
 
 #endif

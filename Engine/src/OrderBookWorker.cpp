@@ -1,6 +1,8 @@
+#include "Engine.h"
 #include "OrderBookWorker.h"
 #include "DatabaseManager.h"
 #include "OrderBook.h"
+#include "Trade.h"
 
 OrderBookWorker::OrderBookWorker(OrderBook& orderBook, std::shared_future<void> stopSignal)
 	:
@@ -115,9 +117,14 @@ void OrderBookWorker::AddLimitOrder(std::unique_ptr<Order> order)
 				order->quantity -= quantitySold;
 				sellOrder->quantity -= quantitySold;
 
-				// Log trade to the database.
-				DatabaseManager::AddTrade(order->symbol, sellOrder->price, quantitySold, 
+				Trade trade(order->symbol, sellOrder->price, quantitySold,
 					order->orderID, sellOrder->orderID, order->userID, order->orderType);
+		
+				// Log trades to the database for the incoming order and the sell order.
+				DatabaseManager::AddTrade(trade);
+
+				// Tell the client to add trade to it's list.
+				Engine::BroadcastTrade(trade);
 				
 				if (sellOrder->quantity == 0)
 				{
@@ -174,9 +181,15 @@ void OrderBookWorker::AddLimitOrder(std::unique_ptr<Order> order)
 				order->quantity -= quantitySold;
 				buyOrder->quantity -= quantitySold;
 
-				// Log trade to the database.
-				DatabaseManager::AddTrade(order->symbol, buyOrder->price, quantitySold,
+				// Log trades to the database for the incoming order and the sell order.
+				Trade trade(order->symbol, buyOrder->price, quantitySold,
 					buyOrder->orderID, order->orderID, order->userID, order->orderType);
+				
+				// Log trades to the database for the incoming order and the sell order.
+				DatabaseManager::AddTrade(trade);
+
+				// Tell the client to add trade to it's list.
+				Engine::BroadcastTrade(trade);
 
 				if (buyOrder->quantity == 0)
 				{
@@ -233,9 +246,15 @@ void OrderBookWorker::ExecuteMatchOrder(std::unique_ptr<Order> order)
 				order->quantity -= quantitySold;
 				sellOrder->quantity -= quantitySold;
 
-				// Log trade to the database.
-				DatabaseManager::AddTrade(order->symbol, sellOrder->price, quantitySold,
+				// Log trades to the database for the incoming order and the sell order.
+				Trade trade(order->symbol, sellOrder->price, quantitySold,
 					order->orderID, sellOrder->orderID, order->userID, order->orderType);
+				
+				// Log trades to the database for the incoming order and the sell order.
+				DatabaseManager::AddTrade(trade);
+
+				// Tell the client to add trade to it's list.
+				Engine::BroadcastTrade(trade);
 
 				if (sellOrder->quantity == 0)
 				{
@@ -276,9 +295,15 @@ void OrderBookWorker::ExecuteMatchOrder(std::unique_ptr<Order> order)
 				order->quantity -= quantitySold;
 				buyOrder->quantity -= quantitySold;
 
-				// Log trade to the database.
-				DatabaseManager::AddTrade(order->symbol, buyOrder->price, quantitySold,
+				// Log trades to the database for the incoming order and the sell order.
+				Trade trade(order->symbol, buyOrder->price, quantitySold,
 					buyOrder->orderID, order->orderID, order->userID, order->orderType);
+				
+				// Log trades to the database for the incoming order and the sell order.
+				DatabaseManager::AddTrade(trade);
+
+				// Tell the client to add trade to it's list.
+				Engine::BroadcastTrade(trade);
 
 				if (buyOrder->quantity == 0)
 				{

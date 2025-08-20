@@ -27,6 +27,9 @@
     <Filter Include="Source\OrderBook">
       <UniqueIdentifier>{9a639239-a1ec-4be1-a00e-9a3714fa9511}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Test">
+      <UniqueIdentifier>{95e50a72-2b44-4c6b-b5f8-cd7ddc025302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DatabaseManager.h">
@@ -67,9 +70,6 @@
     <ClCompile Include="src\EngineWorker.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\External\sqlite\sqlite3.c">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\DatabaseManager.cpp">
       <Filter>Source\Database</Filter>
     </ClCompile>
@@ -91,29 +91,32 @@
     <ClCompile Include="src\OrderBookWorker.cpp">
       <Filter>Source\OrderBook</Filter>
     </ClCompile>
-    <ClCompile Include="src\LimitOrderTests.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DatabaseTests.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EngineTests.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MarketOrderTests.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MessageTests.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OrderBookManagerTests.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\DatabaseTests.cpp">
+      <Filter>Source\Test</Filter>
+    </ClCompile>
     <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc">
-      <Filter>Source</Filter>
+      <Filter>Source\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EngineTests.cpp">
+      <Filter>Source\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\sqlite\sqlite3.c">
+      <Filter>Source\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LimitOrderTests.cpp">
+      <Filter>Source\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MarketOrderTests.cpp">
+      <Filter>Source\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrderBookManagerTests.cpp">
+      <Filter>Source\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MessageTests.cpp">
+      <Filter>Source\Test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

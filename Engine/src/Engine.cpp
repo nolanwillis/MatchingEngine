@@ -1,6 +1,9 @@
 #include "Engine.h"
 #include "OrderBookManager.h"
 #include "Order.h"
+#include "Trade.h"
+
+Engine* Engine::instance = nullptr;
 
 Engine::Engine()
 {
@@ -34,13 +37,66 @@ Engine::~Engine()
 	routingQueueCV.notify_all();
 }
 
+void Engine::Create()
+{
+	if (!instance)
+	{
+		instance = new Engine();
+	}
+}
+void Engine::Destroy()
+{
+	if (instance)
+	{
+		delete instance;
+		instance = nullptr;
+	}
+	else
+	{
+		assert(false);
+	}
+}
+
 void Engine::Run(uint16_t port, int threadCount)
 {
-	CreateWorkers(threadCount);
+	Engine& instance = Engine::GetInstance();
+
+	instance.CreateWorkers(threadCount);
 	
-	webSocketServer.listen(9002);
-	webSocketServer.start_accept();
-	webSocketServer.run();
+	instance.webSocketServer.listen(9002);
+	instance.webSocketServer.start_accept();
+	instance.webSocketServer.run();
+}
+void Engine::BroadcastTrade(Trade& trade)
+{
+	Engine& instance = Engine::GetInstance();
+	
+	size_t size = trade.GetSerializedSize();
+	char* data = new char[size];
+
+	trade.Serialize(data);
+
+	std::lock_guard<std::mutex> lock(instance.connectionMtx);
+	for (auto& conn : instance.connections) 
+	{
+		websocketpp::lib::error_code ec;
+		instance.webSocketServer.send(conn, data, size, websocketpp::frame::opcode::binary, ec);
+		if (ec) 
+		{
+			printf("Broadcast error: %s\n", ec.message());
+		}
+	}
+
+	delete[] data;
+}
+
+Engine& Engine::GetInstance()
+{
+	if (instance)
+	{
+		return(*instance);
+	}
+	assert(false);
 }
 
 void Engine::CreateWorkers(int numWorkers)
@@ -54,11 +110,6 @@ void Engine::CreateWorkers(int numWorkers)
 		);
 		workers.back()->Start();
 	}
-}
-unsigned int Engine::GetNextOrderID()
-{
-	static std::atomic<unsigned int> counter(0);
-	return counter++;
 }
 void Engine::HandleMessage(connection_hdl handle, message_ptr message)
 {

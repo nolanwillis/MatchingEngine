@@ -24,9 +24,7 @@ public:
 	static void Create();
 	static void Destroy();
 
-	static void AddTrade(Stock::Symbol symbol, float price, unsigned int quantity,
-		unsigned int buyOrderID, unsigned int sellOrderID, unsigned int userID, 
-		Order::Type orderType);
+	static void AddTrade(const Trade& trade);
 	static Trade GetTrade(const unsigned int userID);
 	static void WaitUntilWriterIsIdle();
 

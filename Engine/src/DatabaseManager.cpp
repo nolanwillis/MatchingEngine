@@ -73,17 +73,15 @@ DatabaseManager& DatabaseManager::GetInstance()
 	assert(false);
 }
 
-void DatabaseManager::AddTrade(Stock::Symbol symbol, float price, unsigned int quantity,
-	unsigned int buyOrderID, unsigned int sellOrderID, unsigned int userID, 
-	Order::Type orderType)
+void DatabaseManager::AddTrade(const Trade& trade)
 {
 	DatabaseManager& instance = GetInstance();
 
 	{
 		std::lock_guard<std::mutex> lock(instance.tradeQueueMtx);
 		instance.tradeQueue.emplace(
-			std::make_unique<Trade>(symbol, price, quantity, buyOrderID, 
-				sellOrderID, userID, orderType)
+			std::make_unique<Trade>(trade.symbol, trade.price, trade.quantity, trade.buyOrderID, 
+				trade.sellOrderID, trade.userID, trade.orderType)
 		);
 	}
 
@@ -237,6 +235,8 @@ void DatabaseManager::WriteTradeToDatabase()
 		try
 		{
 			std::unique_ptr<Trade> trade = std::move(tradeQueue.front());
+			tradeQueue.pop();
+			lock.unlock();
 			
 			const char* sql = "INSERT INTO Trades (Symbol, Price, Quantity, BuyOrderID, "
 				"SellOrderID, UserID, OrderType) VALUES(? , ? , ? , ? , ? , ? , ?);";
@@ -268,7 +268,6 @@ void DatabaseManager::WriteTradeToDatabase()
 
 			sqlite3_finalize(stmt);
 		
-			tradeQueue.pop();
 		}
 		catch (std::exception& e)
 		{
