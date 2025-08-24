@@ -1,3 +1,4 @@
+#include "Engine.h"
 #include "DatabaseManager.h"
 #include "OrderBookManager.h"
 
@@ -8,6 +9,7 @@ class OrderBookManagerTests : public ::testing::Test
 protected:
 	void SetUp() override
 	{
+		Engine::Create();
 		DatabaseManager::Create();
 		OrderBookManager::Create();
 	}
@@ -16,6 +18,7 @@ protected:
 	{
 		OrderBookManager::Destroy();
 		DatabaseManager::Destroy();
+		Engine::Create();
 	}
 };
 

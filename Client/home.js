@@ -163,14 +163,15 @@ async function onTradeMessage(event)
         
         const messageType = data.getUint32(0, true);
 
-        const trade = {
-        symbol: GetStockSymbol(data.getUint32(4, true)),
-        price: data.getFloat32(8, true),
-        quantity: data.getUint32(12, true),
-        buyOrderID: data.getUint32(16, true),
-        sellOrderID: data.getUint32(20, true),
-        userID: data.getUint32(24, true),
-        orderType: GetOrderType(data.getUint32(28, true))
+        const trade = 
+        {
+            symbol: GetStockSymbol(data.getUint32(4, true)),
+            price: data.getFloat32(8, true),
+            quantity: data.getUint32(12, true),
+            buyOrderID: data.getUint32(16, true),
+            sellOrderID: data.getUint32(20, true),
+            userID: data.getUint32(24, true),
+            orderType: GetOrderType(data.getUint32(28, true))
         };
 
         addTradeCard(trade);

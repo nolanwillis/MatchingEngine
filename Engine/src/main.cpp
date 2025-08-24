@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-//#define TEST_MODE
+#define TEST_MODE
 
 int main()
 {

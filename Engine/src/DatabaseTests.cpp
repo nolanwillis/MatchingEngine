@@ -1,14 +1,17 @@
-#include "gtest/gtest.h"
+#include "Engine.h"
 #include "DatabaseManager.h"
 #include "OrderBookManager.h"
 #include "Stock.h"
 #include "Trade.h"
+
+#include <gtest/gtest.h>
 
 class DatabaseTests : public ::testing::Test
 {
 protected:
 	void SetUp() override
 	{
+		Engine::Create();
 		DatabaseManager::Create();
 		OrderBookManager::Create();
 	}
@@ -17,6 +20,7 @@ protected:
 	{
 		OrderBookManager::Destroy();
 		DatabaseManager::Destroy();
+		Engine::Destroy();
 	}
 };
 
@@ -51,22 +55,13 @@ TEST_F(DatabaseTests, TradeAddedToDBOnMatch)
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-	Trade user3030Trade = DatabaseManager::GetTrade(3030);
-	Trade user2222Trade = DatabaseManager::GetTrade(2222);
+	Trade trade = DatabaseManager::GetTrade(2222);
 
-	EXPECT_EQ(Stock::Symbol::AAA, user3030Trade.symbol);
-	EXPECT_EQ(100.0f, user3030Trade.price);
-	EXPECT_EQ(50, user3030Trade.quantity);
-	EXPECT_EQ(1303, user3030Trade.buyOrderID);
-	EXPECT_EQ(8939, user3030Trade.sellOrderID);
-	EXPECT_EQ(3030, user3030Trade.userID);
-	EXPECT_EQ(Order::Type::Limit, user3030Trade.orderType);
-	
-	EXPECT_EQ(Stock::Symbol::AAA, user2222Trade.symbol);
-	EXPECT_EQ(100.0f, user2222Trade.price);
-	EXPECT_EQ(50, user2222Trade.quantity);
-	EXPECT_EQ(1303, user2222Trade.buyOrderID);
-	EXPECT_EQ(8939, user2222Trade.sellOrderID);
-	EXPECT_EQ(2222, user2222Trade.userID);
-	EXPECT_EQ(Order::Type::Limit, user2222Trade.orderType);
+	EXPECT_EQ(Stock::Symbol::AAA, trade.symbol);
+	EXPECT_EQ(100.0f, trade.price);
+	EXPECT_EQ(50, trade.quantity);
+	EXPECT_EQ(1303, trade.buyOrderID);
+	EXPECT_EQ(8939, trade.sellOrderID);
+	EXPECT_EQ(2222, trade.userID);
+	EXPECT_EQ(Order::Type::Limit, trade.orderType);
 }

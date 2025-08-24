@@ -8,7 +8,8 @@ public:
 	{
 		Null,
 		Order,
-		Trade
+		Trade,
+		Login
 	};
 
 	Message() = delete;

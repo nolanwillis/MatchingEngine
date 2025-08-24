@@ -140,6 +140,7 @@
     <ClInclude Include="include\DatabaseManager.h" />
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\EngineWorker.h" />
+    <ClInclude Include="include\Login.h" />
     <ClInclude Include="include\Message.h" />
     <ClInclude Include="include\OrderBook.h" />
     <ClInclude Include="include\OrderBookWorker.h" />
@@ -157,6 +158,7 @@
     <ClCompile Include="src\EngineWorker.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\LimitOrderTests.cpp" />
+    <ClCompile Include="src\Login.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MarketOrderTests.cpp" />
     <ClCompile Include="src\Message.cpp" />

@@ -1,3 +1,4 @@
+#include "Login.h"
 #include "Order.h"
 #include "Trade.h"
 #include "Stock.h"
@@ -60,6 +61,24 @@ TEST(MessageTests, TradeMessageSerialization)
 	EXPECT_EQ(trade1.sellOrderID, trade2.sellOrderID);
 	EXPECT_EQ(trade1.userID, trade2.userID);
 	EXPECT_EQ(trade1.orderType, trade2.orderType);
+
+	delete dataBuffer;
+}
+
+TEST(MessageTests, LoginMessageSerialization)
+{
+	Login login1("someusername", 1, Login::Type::Request);
+	Login login2;
+
+	char* dataBuffer = new char[login1.GetSerializedSize()];
+
+	login1.Serialize(dataBuffer);
+	login2.Deserialize(dataBuffer);
+
+	EXPECT_EQ(login1.GetMessageType(), login2.GetMessageType());
+	EXPECT_EQ(strcmp(login1.username, login2.username), 0);
+	EXPECT_EQ(login1.userID, login2.userID);
+	EXPECT_EQ(login1.loginType, login2.loginType);
 
 	delete dataBuffer;
 }

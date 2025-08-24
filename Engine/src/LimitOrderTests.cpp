@@ -1,3 +1,4 @@
+#include "Engine.h"
 #include "DatabaseManager.h"
 #include "OrderBook.h"
 #include "Stock.h"
@@ -13,6 +14,7 @@ protected:
 
 	void SetUp() override
 	{
+		Engine::Create();
 		DatabaseManager::Create();
 		
 		this->orderBook = new OrderBook(Stock::Symbol::AAA, stopSignal.get_future().share());
@@ -24,6 +26,7 @@ protected:
 		delete orderBook;
 		
 		DatabaseManager::Destroy();
+		Engine::Destroy();
 	}
 };
 
