@@ -49,25 +49,77 @@ TEST_F(DatabaseTests, CanAddAndGetTrade)
 TEST_F(DatabaseTests, TradeAddedToDBOnMatch)
 {
 	std::unique_ptr<Order>buyOrder =
-		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 1303, 3030, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 3030, 1, Order::Type::Limit);
 
 	std::unique_ptr<Order>sellOrder =
-		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 8939, 2222, 0, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 2222, 0, Order::Type::Limit);
 
 	OrderBookManager::AddMessage(std::move(buyOrder));
 	OrderBookManager::AddMessage(std::move(sellOrder));
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	Trade trade = DatabaseManager::GetTrade(2222);
+	
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	EXPECT_EQ(Stock::Symbol::AAA, trade.symbol);
 	EXPECT_EQ(100.0f, trade.price);
 	EXPECT_EQ(50, trade.quantity);
-	EXPECT_EQ(1303, trade.buyOrderID);
-	EXPECT_EQ(8939, trade.sellOrderID);
 	EXPECT_EQ(2222, trade.userID);
 	EXPECT_EQ(Order::Type::Limit, trade.orderType);
+}
+
+TEST_F(DatabaseTests, CanGetAllTrades)
+{
+	DatabaseManager& instance = DatabaseManager::GetInstance();
+	
+	instance.AddTrade(
+		std::make_unique<Trade>(Stock::Symbol::AAA, 100.0f, 50.0f, 0, 1, 1, Order::Type::Limit)
+	);
+	instance.AddTrade(
+		std::make_unique<Trade>(Stock::Symbol::BBB, 100.0f, 50.0f, 2, 3, 1, Order::Type::Limit)
+	);
+	instance.AddTrade(
+		std::make_unique<Trade>(Stock::Symbol::CCC, 100.0f, 50.0f, 4, 5, 1, Order::Type::Limit)
+	);
+	instance.AddTrade(
+		std::make_unique<Trade>(Stock::Symbol::DDD, 100.0f, 50.0f, 6, 7, 1, Order::Type::Limit)
+	);
+	
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
+
+	std::vector<Trade> trades = DatabaseManager::GetAllTrades(1);
+	
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
+
+	EXPECT_EQ(trades[0].symbol, Stock::Symbol::AAA);
+	EXPECT_EQ(trades[0].price, 100);
+	EXPECT_EQ(trades[0].buyOrderID, 0);
+	EXPECT_EQ(trades[0].sellOrderID, 1);
+	EXPECT_EQ(trades[0].userID, 1);
+	EXPECT_EQ(trades[0].orderType, Order::Type::Limit);
+	
+	EXPECT_EQ(trades[1].symbol, Stock::Symbol::BBB);
+	EXPECT_EQ(trades[1].price, 100);
+	EXPECT_EQ(trades[1].buyOrderID, 2);
+	EXPECT_EQ(trades[1].sellOrderID, 3);
+	EXPECT_EQ(trades[1].userID, 1);
+	EXPECT_EQ(trades[1].orderType, Order::Type::Limit);
+	
+	EXPECT_EQ(trades[2].symbol, Stock::Symbol::CCC);
+	EXPECT_EQ(trades[2].price, 100);
+	EXPECT_EQ(trades[2].buyOrderID, 4);
+	EXPECT_EQ(trades[2].sellOrderID, 5);
+	EXPECT_EQ(trades[2].userID, 1);
+	EXPECT_EQ(trades[2].orderType, Order::Type::Limit);
+	
+	EXPECT_EQ(trades[3].symbol, Stock::Symbol::DDD);
+	EXPECT_EQ(trades[3].price, 100);
+	EXPECT_EQ(trades[3].buyOrderID, 6);
+	EXPECT_EQ(trades[3].sellOrderID, 7);
+	EXPECT_EQ(trades[3].userID, 1);
+	EXPECT_EQ(trades[3].orderType, Order::Type::Limit);
 }
 
 TEST_F(DatabaseTests, CanAddAndGetUser)
@@ -86,5 +138,7 @@ TEST_F(DatabaseTests, CanAddAndGetUser)
 	EXPECT_EQ(fakePerson.userID, 0);
 	EXPECT_EQ(fakePerson.username, "");
 }
+
+
 
 

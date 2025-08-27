@@ -60,13 +60,13 @@ TEST_F(EngineTests, WebsocketMessageWorks)
 	
 	// Create the serialized orders.
 	std::unique_ptr<Order>newOrder1 =
-		std::make_unique<Order>(Stock::Symbol::AAA, 100, 25, 0, 0, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::AAA, 100, 25, 0, 1, Order::Type::Limit);
 	std::unique_ptr<Order>newOrder2 =
-		std::make_unique<Order>(Stock::Symbol::BBB, 100, 25, 1, 1, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::BBB, 100, 25, 1, 1, Order::Type::Limit);
 	std::unique_ptr<Order>newOrder3 =
-		std::make_unique<Order>(Stock::Symbol::CCC, 100, 25, 2, 2, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::CCC, 100, 25, 2, 1, Order::Type::Limit);
 	std::unique_ptr<Order>newOrder4 =
-		std::make_unique<Order>(Stock::Symbol::DDD, 100, 25, 3, 3, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::DDD, 100, 25, 3, 1, Order::Type::Limit);
 	size_t size = newOrder1->GetSerializedSize();
 	char* serializedOrder1 = new char[size];
 	char* serializedOrder2 = new char[size];
@@ -140,32 +140,28 @@ TEST_F(EngineTests, WebsocketMessageWorks)
 	EXPECT_TRUE
 	(
 		buyOrderAAA->symbol == Stock::Symbol::AAA && buyOrderAAA->price == 100 &&
-		buyOrderAAA->quantity == 25 && buyOrderAAA->orderID == 0 &&
-		buyOrderAAA->userID == 0 && buyOrderAAA->isBuy == 1 &&
+		buyOrderAAA->quantity == 25 && buyOrderAAA->userID == 0 && buyOrderAAA->isBuy == 1 &&
 		buyOrderAAA->orderType == Order::Type::Limit
 	);
 
 	EXPECT_TRUE
 	(
 		buyOrderBBB->symbol == Stock::Symbol::BBB && buyOrderBBB->price == 100 &&
-		buyOrderBBB->quantity == 25 && buyOrderBBB->orderID == 1 &&
-		buyOrderBBB->userID == 1 && buyOrderBBB->isBuy == 1 &&
+		buyOrderBBB->quantity == 25 && buyOrderBBB->userID == 1 && buyOrderBBB->isBuy == 1 &&
 		buyOrderBBB->orderType == Order::Type::Limit
 	);
 
 	EXPECT_TRUE
 	(
 		buyOrderCCC->symbol == Stock::Symbol::CCC && buyOrderCCC->price == 100 &&
-		buyOrderCCC->quantity == 25 && buyOrderCCC->orderID == 2 &&
-		buyOrderCCC->userID == 2 && buyOrderCCC->isBuy == 1 &&
+		buyOrderCCC->quantity == 25 && buyOrderCCC->userID == 2 && buyOrderCCC->isBuy == 1 &&
 		buyOrderCCC->orderType == Order::Type::Limit
 	);
 
 	EXPECT_TRUE
 	(
 		buyOrderDDD->symbol == Stock::Symbol::DDD && buyOrderDDD->price == 100 &&
-		buyOrderDDD->quantity == 25 && buyOrderDDD->orderID == 3 &&
-		buyOrderDDD->userID == 3 && buyOrderDDD->isBuy == 1 &&
+		buyOrderDDD->quantity == 25 && buyOrderDDD->userID == 3 && buyOrderDDD->isBuy == 1 &&
 		buyOrderDDD->orderType == Order::Type::Limit
 	);
 

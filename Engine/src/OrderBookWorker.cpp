@@ -2,6 +2,7 @@
 #include "OrderBookWorker.h"
 #include "DatabaseManager.h"
 #include "OrderBook.h"
+#include "Controls.h"
 #include "Trade.h"
 
 OrderBookWorker::OrderBookWorker(OrderBook& orderBook, std::shared_future<void> stopSignal)
@@ -69,7 +70,6 @@ void OrderBookWorker::operator()()
 
 		std::unique_ptr<Order> newOrder = std::move(messageQueue.front());
 		messageQueue.pop();
-
 		lock.unlock();
 
 		if (newOrder->orderType == Order::Type::Limit)
@@ -302,15 +302,13 @@ void OrderBookWorker::GenerateTrades(Order* buyOrder, Order* sellOrder, unsigned
 		sellOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
 		sellOrder->userID, sellOrder->orderType);
 
+#ifndef TEST_MODE_ACTIVE
+	// Tell the client to add a trade to it's list.
+	Engine::BroadcastTrade(buyerTrade.get());
+	Engine::BroadcastTrade(sellerTrade.get());
+#endif
+	
 	// Log trades to the database for the incoming order and the sell order.
 	DatabaseManager::AddMessage(std::move(buyerTrade));
 	DatabaseManager::AddMessage(std::move(sellerTrade));
-
-	// Tell the client to add a trade to it's list.
-	Engine::BroadcastTrade(buyOrder->symbol,
-		buyOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
-		buyOrder->userID, buyOrder->orderType);
-	Engine::BroadcastTrade(sellOrder->symbol,
-		sellOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
-		sellOrder->userID, sellOrder->orderType);
 }

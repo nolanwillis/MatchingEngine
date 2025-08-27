@@ -13,7 +13,6 @@ TEST(MessageTests, OrderMessageSerialization)
 	order1.symbol = Stock::Symbol::AAA;
 	order1.price = 1200.0f;
 	order1.quantity = 50;
-	order1.orderID = 4598;
 	order1.userID = 3895;
 	order1.isBuy = 0;
 	order1.orderType = Order::Type::Limit;
@@ -27,7 +26,6 @@ TEST(MessageTests, OrderMessageSerialization)
 	EXPECT_EQ(order1.symbol, order2.symbol);
 	EXPECT_EQ(order1.price, order2.price);
 	EXPECT_EQ(order1.quantity, order2.quantity);
-	EXPECT_EQ(order1.orderID, order2.orderID);
 	EXPECT_EQ(order1.userID, order2.userID);
 	EXPECT_EQ(order1.isBuy, order2.isBuy);
 	EXPECT_EQ(order1.orderType, order2.orderType);

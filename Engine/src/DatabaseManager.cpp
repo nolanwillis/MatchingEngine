@@ -1,6 +1,7 @@
 #include "DatabaseManager.h"
 #include "Trade.h"
 #include "User.h"
+#include "Controls.h"
 
 #include <assert.h>
 #include <stdexcept>
@@ -254,6 +255,82 @@ Trade DatabaseManager::GetTrade(const unsigned int userID)
 
 	return Trade();
 }
+std::vector<Trade> DatabaseManager::GetAllTrades(const unsigned int userID)
+{
+	std::vector<Trade> trades;
+	
+	try
+	{
+		DatabaseManager& instance = GetInstance();
+
+		// Create the SQL statement.
+		const char* sql = "SELECT * FROM Trades WHERE UserID = ?;";
+		sqlite3_stmt* stmt = nullptr;
+		int result = sqlite3_prepare_v2(instance.database, sql, -1, &stmt, nullptr);
+		if (result != SQLITE_OK)
+		{
+			std::string fullErrorMessage = "Failed to prepare statement ";
+			fullErrorMessage.append(sqlite3_errmsg(instance.database)).append("\n");
+
+			throw std::runtime_error(fullErrorMessage);
+		}
+
+		// Bind the userID to the statement (the WHERE clause).
+		result = sqlite3_bind_int(stmt, 1, userID);
+
+		if (result != SQLITE_OK)
+		{
+			sqlite3_finalize(stmt);
+
+			std::string fullErrorMessage = "Failed to bind parameter userID ";
+			fullErrorMessage.append(sqlite3_errmsg(instance.database)).append("\n");
+
+			throw std::runtime_error(fullErrorMessage);
+		}
+
+		// Iterate through all rows
+		while (true)
+		{
+			int rc = sqlite3_step(stmt);
+			if (rc == SQLITE_ROW)
+			{
+				Trade trade
+				(
+					(Stock::Symbol)sqlite3_column_int(stmt, 1),
+					(float)sqlite3_column_double(stmt, 2),
+					sqlite3_column_int(stmt, 3),
+					sqlite3_column_int(stmt, 4),
+					sqlite3_column_int(stmt, 5),
+					sqlite3_column_int(stmt, 6),
+					(Order::Type)sqlite3_column_int(stmt, 7)
+				);
+
+				trades.push_back(trade);
+			}
+			else if (rc == SQLITE_DONE)
+			{
+				// No more rows
+				break;
+			}
+			else
+			{
+				std::string fullErrorMessage = "Error while finding trades ";
+				fullErrorMessage.append(sqlite3_errmsg(instance.database)).append("\n");
+
+				sqlite3_finalize(stmt);
+				throw std::runtime_error(fullErrorMessage);
+			}
+		}
+
+		sqlite3_finalize(stmt);
+	}
+	catch (std::exception& e)
+	{
+		printf("Error: %s", e.what());
+	}
+
+	return trades;
+}
 void DatabaseManager::WaitUntilWriterIsIdle()
 {
 	DatabaseManager& instance = GetInstance();
@@ -279,10 +356,10 @@ void DatabaseManager::SetupTables()
 		{
 			throw std::runtime_error("Could not open the database.");
 		}
-
+#ifdef CLEAR_HISTORIC_TRADES
 		const char* tradesTable = R"(
 			DROP TABLE IF EXISTS Trades;
-
+			
 			CREATE TABLE Trades (
 				TradeID     INTEGER PRIMARY KEY AUTOINCREMENT,
 				Symbol      INTEGER NOT NULL,
@@ -295,6 +372,22 @@ void DatabaseManager::SetupTables()
 				Timestamp   DATETIME DEFAULT CURRENT_TIMESTAMP
 			);
 		)";
+#else
+		const char* tradesTable = R"(			
+
+			CREATE TABLE IF NOT EXISTS Trades (
+				TradeID     INTEGER PRIMARY KEY AUTOINCREMENT,
+				Symbol      INTEGER NOT NULL,
+				Price       DOUBLE NOT NULL,
+				Quantity    INTEGER NOT NULL,
+				BuyOrderID  INTEGER NOT NULL,
+				SellOrderID INTEGER NOT NULL,
+				UserID      INTEGER NOT NULL,
+				OrderType   INTEGER NOT NULL, 
+				Timestamp   DATETIME DEFAULT CURRENT_TIMESTAMP
+			);
+		)";
+#endif
 		const char* usersTable = R"(
 			DROP TABLE IF EXISTS Users;
 

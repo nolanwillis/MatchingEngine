@@ -68,6 +68,9 @@
     <ClInclude Include="include\User.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Controls.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp">

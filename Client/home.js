@@ -10,7 +10,7 @@
 // 4:  symbol      (u32)
 // 8:  price       (f32)
 // 12: quantity    (u32)
-// 16: orderID     (u32)
+// 16: orderID     (u32) // Set on the server, any value sent in this slot is overwritten.
 // 20: userID      (u32)
 // 24: isBuy       (u32)
 // 28: orderType   (u32)
@@ -198,7 +198,6 @@ document.getElementById("orderForm").addEventListener("submit", (e) => {
   const symbol = parseInt(document.getElementById("symbol").value, 10);
   const price = parseFloat(document.getElementById("price").value);
   const quantity = parseInt(document.getElementById("quantity").value, 10);
-  const orderID = parseInt(document.getElementById("orderID").value, 10);
   const userID = localStorage.getItem("userID");
   const isBuy = parseInt(document.getElementById("isBuy").value, 10);
   const orderType = parseInt(document.getElementById("orderType").value, 10);
@@ -212,7 +211,7 @@ document.getElementById("orderForm").addEventListener("submit", (e) => {
   view.setUint32(off, symbol, true);      off += 4;
   view.setFloat32(off, price, true);      off += 4;
   view.setUint32(off, quantity, true);    off += 4;
-  view.setUint32(off, orderID, true);     off += 4;
+  view.setUint32(off, 0, true);           off += 4;
   view.setUint32(off, userID, true);      off += 4;
   view.setUint32(off, isBuy, true);       off += 4;
   view.setUint32(off, orderType, true);

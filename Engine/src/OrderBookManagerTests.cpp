@@ -38,26 +38,26 @@ TEST_F(OrderBookManagerTests, CreatesAllOrderBooks)
 TEST_F(OrderBookManagerTests, CanProcessOrders)
 {
 	std::unique_ptr<Order> buyOrder1 =
-		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 0, 0, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::AAA, 100, 50, 0, 1, Order::Type::Limit);
 	std::unique_ptr<Order> buyOrder2 =
-		std::make_unique<Order>(Stock::Symbol::BBB, 100, 50, 1, 1, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::BBB, 100, 50, 1, 1, Order::Type::Limit);
 	std::unique_ptr<Order> buyOrder3 =
-		std::make_unique<Order>(Stock::Symbol::CCC, 100, 50, 2, 2, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::CCC, 100, 50, 2, 1, Order::Type::Limit);
 	std::unique_ptr<Order> buyOrder4 =
-		std::make_unique<Order>(Stock::Symbol::DDD, 100, 50, 3, 3, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::DDD, 100, 50, 3, 1, Order::Type::Limit);
 	std::unique_ptr<Order> buyOrder5 =
-		std::make_unique<Order>(Stock::Symbol::EEE, 100, 50, 4, 4, 1, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::EEE, 100, 50, 4, 1, Order::Type::Limit);
 
 	std::unique_ptr<Order> sellOrder1 =
-		std::make_unique<Order>(Stock::Symbol::AAA, 200, 50, 5, 5, 0, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::AAA, 200, 50, 5, 0, Order::Type::Limit);
 	std::unique_ptr<Order> sellOrder2 =
-		std::make_unique<Order>(Stock::Symbol::BBB, 200, 50, 6, 6, 0, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::BBB, 200, 50, 6, 0, Order::Type::Limit);
 	std::unique_ptr<Order> sellOrder3 =
-		std::make_unique<Order>(Stock::Symbol::CCC, 200, 50, 7, 7, 0, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::CCC, 200, 50, 7, 0, Order::Type::Limit);
 	std::unique_ptr<Order> sellOrder4 =
-		std::make_unique<Order>(Stock::Symbol::DDD, 200, 50, 8, 8, 0, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::DDD, 200, 50, 8, 0, Order::Type::Limit);
 	std::unique_ptr<Order> sellOrder5 =
-		std::make_unique<Order>(Stock::Symbol::EEE, 200, 50, 9, 9, 0, Order::Type::Limit);
+		std::make_unique<Order>(Stock::Symbol::EEE, 200, 50, 9, 0, Order::Type::Limit);
 
 	OrderBookManager::AddMessage(std::move(buyOrder1));
 	OrderBookManager::AddMessage(std::move(buyOrder2));

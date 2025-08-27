@@ -147,6 +147,7 @@
     <ClInclude Include="include\OrderBookManager.h" />
     <ClInclude Include="include\Order.h" />
     <ClInclude Include="include\Stock.h" />
+    <ClInclude Include="include\Controls.h" />
     <ClInclude Include="include\Trade.h" />
     <ClInclude Include="include\User.h" />
   </ItemGroup>

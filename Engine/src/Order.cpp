@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <atomic>
 #include <string>
+#include <chrono>
 
 Order::Order()
 	:
@@ -10,19 +11,19 @@ Order::Order()
 	symbol(Stock::Symbol::NA),
 	price(0.0f),
 	quantity(0),
-	orderID(0),
+	orderID(Order::GetNewOrderID()),
 	userID(0),
 	isBuy(false),
 	orderType(Order::Type::Uninitialized)
 {}
-Order::Order(Stock::Symbol symbol, float price, unsigned int quantity, unsigned int orderID, 
+Order::Order(Stock::Symbol symbol, float price, unsigned int quantity,
 	unsigned int userID, unsigned int isBuy, Order::Type orderType)
 	:
 	Message(Message::Type::Order),
 	symbol(symbol),
 	price(price),
 	quantity(quantity),
-	orderID(orderID),
+	orderID(Order::GetNewOrderID()),
 	userID(userID),
 	isBuy(isBuy),
 	orderType(orderType)
@@ -138,14 +139,15 @@ void Order::Deserialize(char* buffer)
 		sizeof(unsigned int)
 	);
 	// orderID
-	memcpy_s(
-		&this->orderID,
-		sizeof(unsigned int),
-		buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
-		sizeof(unsigned int),
-		sizeof(unsigned int)
-	);
-
+	// Skipped because when receiving data and deserilizing into a new Order, 
+	// the order auto generates an orderID. 
+	//memcpy_s(
+	//	&this->orderID,
+	//	sizeof(unsigned int),
+	//	buffer + sizeof(Message::Type) + sizeof(Stock::Symbol) + sizeof(float) + 
+	//	sizeof(unsigned int),
+	//	sizeof(unsigned int)
+	//);
 	// userID
 	memcpy_s(
 		&this->userID,
@@ -192,3 +194,19 @@ void Order::Print() const
 				printf("[Type]: Sell Market Order } \n");
 		}
 	}
+
+unsigned int Order::GetNewOrderID()
+{
+	using namespace std::chrono;
+
+	// Get current time since epoch in milliseconds
+	auto now = system_clock::now();
+	auto ms = duration_cast<milliseconds>(now.time_since_epoch()).count();
+
+	// To avoid collisions within the same ms, add an atomic counter
+	static std::atomic<unsigned int> counter{ 0 };
+	unsigned int localCounter = counter++;
+
+	// Combine: take lower 32 bits of ms and mix with counter
+	return static_cast<unsigned int>((ms & 0xFFFFFFF0ULL) ^ localCounter);
+}

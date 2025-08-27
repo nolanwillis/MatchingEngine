@@ -70,23 +70,19 @@ void Engine::Run(uint16_t port, int threadCount)
 	instance.webSocketServer.start_accept();
 	instance.webSocketServer.run();
 }
-void Engine::BroadcastTrade(Stock::Symbol symbol, float price, unsigned int quantity,
-	unsigned int buyOrderID, unsigned int sellOrderID,
-	unsigned int userID, Order::Type orderType)
+void Engine::BroadcastTrade(Trade* trade)
 {
 	Engine& instance = Engine::GetInstance();
 
-	Trade trade = Trade(symbol, price, quantity, buyOrderID, sellOrderID, userID, orderType);
-	
-	size_t size = trade.GetSerializedSize();
+	size_t size = trade->GetSerializedSize();
 	char* data = new char[size];
 
-	trade.Serialize(data);
+	trade->Serialize(data);
 
 	std::lock_guard<std::mutex> connectionLock(instance.connectionMtx);
 	std::lock_guard<std::mutex> activeUserLock(instance.activeUserMapMtx);
 	
-	auto& connection = instance.activeUserMap[trade.userID];
+	auto& connection = instance.activeUserMap[trade->userID];
 	
 	websocketpp::lib::error_code ec;
 	instance.webSocketServer.send(connection, data, size, websocketpp::frame::opcode::binary, ec);
@@ -97,7 +93,6 @@ void Engine::BroadcastTrade(Stock::Symbol symbol, float price, unsigned int quan
 
 	delete[] data;
 }
-
 void Engine::VerifyLogin(std::unique_ptr<Login> login)
 {
 	Engine& instance = Engine::GetInstance();
@@ -113,8 +108,17 @@ void Engine::VerifyLogin(std::unique_ptr<Login> login)
 		login->loginType = Login::Type::Acknowledge;
 
 		// Add the user to the active user list.
-		std::lock_guard<std::mutex> lock(instance.activeUserMapMtx);
-		instance.activeUserMap[user.userID] = login->connectionHandle;
+		{
+			std::lock_guard<std::mutex> lock(instance.activeUserMapMtx);
+			instance.activeUserMap[user.userID] = login->connectionHandle;
+		}
+
+		// Send any trades already stored in the database on login.
+		std::vector<Trade> trades = DatabaseManager::GetAllTrades(user.userID);
+		for (auto& trade : trades)
+		{
+			BroadcastTrade(&trade);
+		}
 	}
 	else
 	{
@@ -124,7 +128,7 @@ void Engine::VerifyLogin(std::unique_ptr<Login> login)
 	// Send the Login message back to the client.
 	size_t size = login->GetSerializedSize();
 	char* data = new char[size];
-	
+
 	login->Serialize(data);
 	
 	std::lock_guard<std::mutex> lock(instance.connectionMtx);

@@ -24,16 +24,19 @@ public:
 
 	Order();
 	Order(Stock::Symbol symbol, float price, unsigned int quantity, 
-		unsigned int orderID, unsigned int userID, unsigned int isBuy, 
-		Order::Type orderType);
+		unsigned int userID, unsigned int isBuy, Order::Type orderType);
 	Order(const Order& rhs);
 	Order& operator=(const Order& rhs);
 	virtual ~Order() = default;
 
+	
 	virtual void Serialize(char* buffer) override;
 	virtual void Deserialize(char* buffer) override;
 	virtual size_t GetSerializedSize() const override;
 	virtual void Print() const override;
+
+private:
+	static unsigned int GetNewOrderID();
 };
 
 #endif

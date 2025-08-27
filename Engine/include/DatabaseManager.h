@@ -23,6 +23,7 @@ class DatabaseManager
 {
 public:
 	FRIEND_TEST(DatabaseTests, CanAddAndGetTrade);
+	FRIEND_TEST(DatabaseTests, CanGetAllTrades);
 
 	static void Create();
 	static void Destroy();
@@ -31,6 +32,7 @@ public:
 	static void AddUser(std::string username);
 	static User GetUser(std::string username);
 	static Trade GetTrade(const unsigned int userID);
+	static std::vector<Trade> GetAllTrades(const unsigned int userID);
 	//static User GetUser(const std::string& username);
 	static void WaitUntilWriterIsIdle();
 

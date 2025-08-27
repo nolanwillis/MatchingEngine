@@ -1,19 +1,18 @@
 #include "DatabaseManager.h"
 #include "Engine.h"
 #include "OrderBookManager.h"
+#include "Controls.h"
 
 #include <gtest/gtest.h>
 
-//#define TEST_MODE
-
 int main()
 {
-#ifdef TEST_MODE
+#ifdef TEST_MODE_ACTIVE
 	::testing::InitGoogleTest();
 	return RUN_ALL_TESTS();
 #endif
 
-#ifndef TEST_MODE
+#ifndef TEST_MODE_ACTIVE
 	Engine::Create();
 	DatabaseManager::Create();
 	OrderBookManager::Create();

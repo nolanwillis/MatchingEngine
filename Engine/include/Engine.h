@@ -40,9 +40,7 @@ public:
 	static void Destroy();
 
 	static void Run(uint16_t port, int threadCount = 4);
-	static void BroadcastTrade(Stock::Symbol symbol, float price, unsigned int quantity,
-		unsigned int buyOrderID, unsigned int sellOrderID,
-		unsigned int userID, Order::Type orderType);
+	static void BroadcastTrade(Trade* trade);
 	static void VerifyLogin(std::unique_ptr<Login> login);
 
 private:
