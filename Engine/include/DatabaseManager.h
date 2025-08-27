@@ -2,6 +2,7 @@
 #define DATABASE_MANAGER_H
 
 #include "Order.h"
+#include "Message.h"
 #include "sqlite3.h"
 #include "Stock.h"
 
@@ -14,6 +15,8 @@
 #include <thread>
 
 class DatabaseTests;
+class Login;
+class User;
 class Trade;
 
 class DatabaseManager
@@ -24,8 +27,11 @@ public:
 	static void Create();
 	static void Destroy();
 
-	static void AddTrade(const Trade& trade);
+	static void AddMessage(std::unique_ptr<Message> message);
+	static void AddUser(std::string username);
+	static User GetUser(std::string username);
 	static Trade GetTrade(const unsigned int userID);
+	//static User GetUser(const std::string& username);
 	static void WaitUntilWriterIsIdle();
 
 private:
@@ -35,10 +41,10 @@ private:
 	::sqlite3* database;
 
 	std::atomic<bool> shouldStopWriting;
-	std::queue<std::unique_ptr<Trade>> tradeQueue;
-	std::mutex tradeQueueMtx;
-	std::condition_variable tradeQueueCV;
-	std::thread tradeWriterThread;
+	std::queue<std::unique_ptr<Message>> messageQueue;
+	std::mutex messageQueueMtx;
+	std::condition_variable messageQueueCV;
+	std::thread thread;
 	
 	static DatabaseManager& GetInstance();
 
@@ -48,7 +54,10 @@ private:
 	~DatabaseManager();
 
 	void SetupTables();
-	void WriteTradeToDatabase();
+	void ProcessMessages();
+
+	// Processing helpers.
+	void AddTrade(std::unique_ptr<Trade> trade);
 };
 
 #endif

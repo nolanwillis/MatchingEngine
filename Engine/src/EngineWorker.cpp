@@ -1,5 +1,6 @@
 #include "EngineWorker.h"
 #include "Engine.h"
+#include "Login.h"
 #include "OrderBookManager.h"
 
 #include <condition_variable>
@@ -39,8 +40,22 @@ void EngineWorker::operator()()
 		{
 			break;
 		}
-
-		OrderBookManager::AddMessage(std::move(engine.routingQueue.front()));
+		
+		// Pop a message off the queue. 
+		std::unique_ptr<Message> currentMessage = std::move(engine.routingQueue.front());
 		engine.routingQueue.pop();
+		lock.unlock();
+
+		Message::Type currentMessageType = currentMessage->GetMessageType();
+
+		if (currentMessageType == Message::Type::Order)
+		{
+			OrderBookManager::AddMessage(std::move(currentMessage));
+		}
+		else if (currentMessageType == Message::Type::Login)
+		{
+			std::unique_ptr<Login> loginMessage((Login*)currentMessage.release());
+			engine.VerifyLogin(std::move(loginMessage));
+		}
 	}
 }

@@ -148,6 +148,7 @@
     <ClInclude Include="include\Order.h" />
     <ClInclude Include="include\Stock.h" />
     <ClInclude Include="include\Trade.h" />
+    <ClInclude Include="include\User.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\External\googletest\googletest\src\gtest-all.cc" />

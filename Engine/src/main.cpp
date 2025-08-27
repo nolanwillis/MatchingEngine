@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-#define TEST_MODE
+//#define TEST_MODE
 
 int main()
 {
@@ -17,6 +17,9 @@ int main()
 	Engine::Create();
 	DatabaseManager::Create();
 	OrderBookManager::Create();
+
+	DatabaseManager::AddUser("Nolan");
+	DatabaseManager::AddUser("Liam");
 
 	printf("Engine server running...\n");
 	Engine::Run(9002);

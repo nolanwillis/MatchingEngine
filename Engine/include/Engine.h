@@ -4,8 +4,11 @@
 #define ASIO_STANDALONE
 #define _WEBSOCKETPP_CPP11_STL_
 
-#include "Message.h"
 #include "EngineWorker.h"
+#include "Message.h"
+#include "User.h"
+#include "Order.h"
+#include "Stock.h"
 
 #include <asio.hpp>
 #include <condition_variable>
@@ -22,6 +25,7 @@ using message_ptr = websocketpp::server<websocketpp::config::asio>::message_ptr;
 using WebSocketServer = websocketpp::server<websocketpp::config::asio>;
 
 class EngineTests;
+class Login;
 class Trade;
 
 class Engine
@@ -36,7 +40,10 @@ public:
 	static void Destroy();
 
 	static void Run(uint16_t port, int threadCount = 4);
-	static void BroadcastTrade(Trade& trade);
+	static void BroadcastTrade(Stock::Symbol symbol, float price, unsigned int quantity,
+		unsigned int buyOrderID, unsigned int sellOrderID,
+		unsigned int userID, Order::Type orderType);
+	static void VerifyLogin(std::unique_ptr<Login> login);
 
 private:
 	static Engine* instance;
@@ -50,7 +57,11 @@ private:
 	std::condition_variable routingQueueCV;
 	
 	std::vector<std::unique_ptr<EngineWorker>> workers;
-	std::promise<void> stopSignal; 
+	std::promise<void> stopSignal;
+
+	// Associates a userID with a connection.
+	std::map<unsigned int, connection_hdl> activeUserMap;
+	std::mutex activeUserMapMtx;
 
 	static Engine& GetInstance();
 	

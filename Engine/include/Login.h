@@ -1,9 +1,17 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
+#define ASIO_STANDALONE
+#define _WEBSOCKETPP_CPP11_STL_
+
 #include "Message.h"
 
+#include <asio.hpp>
 #include <string>
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
+
+using websocketpp::connection_hdl;
 
 class Login : public Message
 {
@@ -11,8 +19,8 @@ public:
 	enum class Type
 	{
 		Null,
-		Request,
-		Acknowledgment
+		Acknowledge,
+		Reject
 	};
 
 	static size_t usernameSize;
@@ -20,6 +28,7 @@ public:
 	char* username;
 	unsigned int userID;
 	Login::Type loginType;
+	connection_hdl connectionHandle;
 
 	Login();
 	Login(const char* username, unsigned int userID, Login::Type LoginType);

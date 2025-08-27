@@ -31,14 +31,14 @@ private:
 
 	std::shared_future<void> stopSignal;
 	
-	std::queue<std::unique_ptr<Order>> orderQueue;
-	std::mutex orderQueueMtx;
-
-	std::condition_variable cv;
+	std::queue<std::unique_ptr<Order>> messageQueue;
+	std::mutex messageQueueMtx;
+	std::condition_variable messageQueueCV;
 	std::thread thread;
 
 	void AddLimitOrder(std::unique_ptr<Order> order);
 	void ExecuteMatchOrder(std::unique_ptr<Order> order);
+	void GenerateTrades(Order* buyOrder, Order* sellOrder, unsigned int quantity);
 };
 
 #endif

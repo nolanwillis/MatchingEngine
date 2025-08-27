@@ -67,7 +67,7 @@ TEST(MessageTests, TradeMessageSerialization)
 
 TEST(MessageTests, LoginMessageSerialization)
 {
-	Login login1("someusername", 1, Login::Type::Request);
+	Login login1("someusername", 1, Login::Type::Acknowledge);
 	Login login2;
 
 	char* dataBuffer = new char[login1.GetSerializedSize()];
@@ -77,8 +77,6 @@ TEST(MessageTests, LoginMessageSerialization)
 
 	EXPECT_EQ(login1.GetMessageType(), login2.GetMessageType());
 	EXPECT_EQ(strcmp(login1.username, login2.username), 0);
-	EXPECT_EQ(login1.userID, login2.userID);
-	EXPECT_EQ(login1.loginType, login2.loginType);
 
 	delete dataBuffer;
 }

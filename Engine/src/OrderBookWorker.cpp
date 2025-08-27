@@ -8,15 +8,15 @@ OrderBookWorker::OrderBookWorker(OrderBook& orderBook, std::shared_future<void> 
 	:
 	orderBook(orderBook),
 	stopSignal(std::move(stopSignal)),
-	orderQueue(),
-	orderQueueMtx(),
-	cv(),
+	messageQueue(),
+	messageQueueMtx(),
+	messageQueueCV(),
 	thread()
 {}
 OrderBookWorker::~OrderBookWorker()
 {
 	// Tell the thread to check it's stop signal condition.
-	cv.notify_one();
+	messageQueueCV.notify_one();
 
 	if (thread.joinable())
 	{
@@ -30,16 +30,16 @@ void OrderBookWorker::Start()
 }
 void OrderBookWorker::AddOrder(std::unique_ptr<Order> order)
 {
-	std::lock_guard<std::mutex> lock(orderQueueMtx);
-	orderQueue.push(std::move(order));
-	cv.notify_one();
+	std::lock_guard<std::mutex> lock(messageQueueMtx);
+	messageQueue.push(std::move(order));
+	messageQueueCV.notify_one();
 }
 void OrderBookWorker::WaitUntilIdle()
 {
 	while (true)
 	{
-		std::unique_lock<std::mutex> lock(orderQueueMtx);
-		if (orderQueue.empty())
+		std::unique_lock<std::mutex> lock(messageQueueMtx);
+		if (messageQueue.empty())
 		{
 			break;
 		}
@@ -52,12 +52,12 @@ void OrderBookWorker::operator()()
 {
 	while (true)
 	{
-		std::unique_lock<std::mutex> lock(orderQueueMtx);
+		std::unique_lock<std::mutex> lock(messageQueueMtx);
 		
 		// Wait while the queue is empty and the stop signal has not been sent. 
-		cv.wait(lock, [this] 
+		messageQueueCV.wait(lock, [this] 
 		{ 
-			return !orderQueue.empty() || 
+			return !messageQueue.empty() || 
 			stopSignal.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
 		});
 		// If the stop signal has been sent, allowing us to reach this point, don't
@@ -67,8 +67,8 @@ void OrderBookWorker::operator()()
 			break;
 		}
 
-		std::unique_ptr<Order> newOrder = std::move(orderQueue.front());
-		orderQueue.pop();
+		std::unique_ptr<Order> newOrder = std::move(messageQueue.front());
+		messageQueue.pop();
 
 		lock.unlock();
 
@@ -117,14 +117,7 @@ void OrderBookWorker::AddLimitOrder(std::unique_ptr<Order> order)
 				order->quantity -= quantitySold;
 				sellOrder->quantity -= quantitySold;
 
-				Trade trade(order->symbol, sellOrder->price, quantitySold,
-					order->orderID, sellOrder->orderID, order->userID, order->orderType);
-		
-				// Log trades to the database for the incoming order and the sell order.
-				DatabaseManager::AddTrade(trade);
-
-				// Tell the client to add trade to it's list.
-				Engine::BroadcastTrade(trade);
+				GenerateTrades(order.get(), sellOrder, quantitySold);
 				
 				if (sellOrder->quantity == 0)
 				{
@@ -177,19 +170,11 @@ void OrderBookWorker::AddLimitOrder(std::unique_ptr<Order> order)
 				}
 
 				int quantitySold = std::min(order->quantity, buyOrder->quantity);
-
+				
 				order->quantity -= quantitySold;
 				buyOrder->quantity -= quantitySold;
-
-				// Log trades to the database for the incoming order and the sell order.
-				Trade trade(order->symbol, buyOrder->price, quantitySold,
-					buyOrder->orderID, order->orderID, order->userID, order->orderType);
 				
-				// Log trades to the database for the incoming order and the sell order.
-				DatabaseManager::AddTrade(trade);
-
-				// Tell the client to add trade to it's list.
-				Engine::BroadcastTrade(trade);
+				GenerateTrades(buyOrder, order.get(), quantitySold);
 
 				if (buyOrder->quantity == 0)
 				{
@@ -245,16 +230,8 @@ void OrderBookWorker::ExecuteMatchOrder(std::unique_ptr<Order> order)
 
 				order->quantity -= quantitySold;
 				sellOrder->quantity -= quantitySold;
-
-				// Log trades to the database for the incoming order and the sell order.
-				Trade trade(order->symbol, sellOrder->price, quantitySold,
-					order->orderID, sellOrder->orderID, order->userID, order->orderType);
 				
-				// Log trades to the database for the incoming order and the sell order.
-				DatabaseManager::AddTrade(trade);
-
-				// Tell the client to add trade to it's list.
-				Engine::BroadcastTrade(trade);
+				GenerateTrades(order.get(), sellOrder, quantitySold);
 
 				if (sellOrder->quantity == 0)
 				{
@@ -294,16 +271,8 @@ void OrderBookWorker::ExecuteMatchOrder(std::unique_ptr<Order> order)
 
 				order->quantity -= quantitySold;
 				buyOrder->quantity -= quantitySold;
-
-				// Log trades to the database for the incoming order and the sell order.
-				Trade trade(order->symbol, buyOrder->price, quantitySold,
-					buyOrder->orderID, order->orderID, order->userID, order->orderType);
 				
-				// Log trades to the database for the incoming order and the sell order.
-				DatabaseManager::AddTrade(trade);
-
-				// Tell the client to add trade to it's list.
-				Engine::BroadcastTrade(trade);
+				GenerateTrades(buyOrder, order.get(), quantitySold);
 
 				if (buyOrder->quantity == 0)
 				{
@@ -321,4 +290,27 @@ void OrderBookWorker::ExecuteMatchOrder(std::unique_ptr<Order> order)
 			}
 		}
 	}
+}
+
+void OrderBookWorker::GenerateTrades(Order* buyOrder, Order* sellOrder, unsigned int quantity)
+{
+	std::unique_ptr<Trade> buyerTrade = std::make_unique<Trade>(buyOrder->symbol,
+		buyOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
+		buyOrder->userID, buyOrder->orderType);
+
+	std::unique_ptr<Trade> sellerTrade = std::make_unique<Trade>(sellOrder->symbol,
+		sellOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
+		sellOrder->userID, sellOrder->orderType);
+
+	// Log trades to the database for the incoming order and the sell order.
+	DatabaseManager::AddMessage(std::move(buyerTrade));
+	DatabaseManager::AddMessage(std::move(sellerTrade));
+
+	// Tell the client to add a trade to it's list.
+	Engine::BroadcastTrade(buyOrder->symbol,
+		buyOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
+		buyOrder->userID, buyOrder->orderType);
+	Engine::BroadcastTrade(sellOrder->symbol,
+		sellOrder->price, quantity, buyOrder->orderID, sellOrder->orderID,
+		sellOrder->userID, sellOrder->orderType);
 }

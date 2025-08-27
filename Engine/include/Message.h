@@ -9,7 +9,7 @@ public:
 		Null,
 		Order,
 		Trade,
-		Login
+		Login,
 	};
 
 	Message() = delete;

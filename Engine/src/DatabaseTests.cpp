@@ -3,6 +3,7 @@
 #include "OrderBookManager.h"
 #include "Stock.h"
 #include "Trade.h"
+#include "User.h"
 
 #include <gtest/gtest.h>
 
@@ -28,7 +29,10 @@ TEST_F(DatabaseTests, CanAddAndGetTrade)
 {
 	DatabaseManager& instance = *DatabaseManager::instance;
 
-	instance.AddTrade(Trade(Stock::Symbol::AAA, 100.0f, 50, 8403, 3402, 1024, Order::Type::Limit));
+	instance.AddMessage(
+		std::make_unique<Trade>(Stock::Symbol::AAA, 100.0f, 50, 8403, 
+			3402, 1024, Order::Type::Limit)
+	);
 	instance.WaitUntilWriterIsIdle();
 
 	Trade trade2 = instance.GetTrade(1024);
@@ -65,3 +69,22 @@ TEST_F(DatabaseTests, TradeAddedToDBOnMatch)
 	EXPECT_EQ(2222, trade.userID);
 	EXPECT_EQ(Order::Type::Limit, trade.orderType);
 }
+
+TEST_F(DatabaseTests, CanAddAndGetUser)
+{
+	DatabaseManager::AddUser("person1@gmail.com");
+	DatabaseManager::AddUser("person2@gmail.com");
+
+	User person1 = DatabaseManager::GetUser("person1@gmail.com");
+	User person2 = DatabaseManager::GetUser("person2@gmail.com");
+	User fakePerson = DatabaseManager::GetUser("fake_person@gmail.com");
+
+	EXPECT_EQ(person1.userID, 1);
+	EXPECT_EQ(person1.username, "person1@gmail.com");
+	EXPECT_EQ(person2.userID, 2);
+	EXPECT_EQ(person2.username, "person2@gmail.com");
+	EXPECT_EQ(fakePerson.userID, 0);
+	EXPECT_EQ(fakePerson.username, "");
+}
+
+

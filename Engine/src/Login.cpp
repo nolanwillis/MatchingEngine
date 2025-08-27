@@ -1,6 +1,6 @@
 #include "Login.h"
 
-size_t Login::usernameSize = 32;
+size_t Login::usernameSize = 50;
 
 Login::Login()
 	:
@@ -51,7 +51,6 @@ void Login::Serialize(char* buffer)
 		sizeof(Login::Type)
 	);
 }
-
 void Login::Deserialize(char* buffer)
 {
 	Message::Deserialize(buffer);
@@ -63,20 +62,6 @@ void Login::Deserialize(char* buffer)
 		buffer + sizeof(Message::Type),
 		usernameSize
 	);
-	// userID
-	memcpy_s(
-		&this->userID,
-		sizeof(unsigned int),
-		buffer + sizeof(Message::Type) + usernameSize,
-		sizeof(unsigned int)
-	);
-	// loginType
-	memcpy_s(
-		&this->loginType,
-		sizeof(Login::Type),
-		buffer + sizeof(Message::Type) + usernameSize + sizeof(unsigned int),
-		sizeof(Login::Type)
-	);
 }
 size_t Login::GetSerializedSize() const
 {
@@ -86,11 +71,11 @@ size_t Login::GetSerializedSize() const
 void Login::Print() const
 {
 	printf("[Username]: %s, [User ID]: %u, ");
-	if (loginType == Login::Type::Request)
+	if (loginType == Login::Type::Reject)
 	{
-		printf("[Type]: Request\n");
+		printf("[Type]: Rejection\n");
 	}
-	else if (loginType == Login::Type::Acknowledgment)
+	else if (loginType == Login::Type::Acknowledge)
 	{
 		printf("[Type]: Acknowledgement\n");
 	}
