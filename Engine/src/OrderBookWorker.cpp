@@ -72,6 +72,7 @@ void OrderBookWorker::operator()()
 		messageQueue.pop();
 		lock.unlock();
 
+
 		if (newOrder->orderType == Order::Type::Limit)
 		{
 			AddLimitOrder(std::move(newOrder));

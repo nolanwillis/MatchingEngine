@@ -85,10 +85,49 @@ function addTradeCard(trade)
     card.appendChild(info);
     tradeContainer.prepend(card);
 }
-function setFormStatus(message) 
-{
-    document.getElementById("status").textContent = message;
+function renderOrders(orders, container) {
+  container.innerHTML = "";
+  if (orders.length === 0) {
+    container.innerHTML = `<div class="muted">No orders</div>`;
+    return;
+  }
+  orders.forEach(order => {
+    const row = document.createElement("div");
+    row.className = "order-row";
+    row.innerHTML = `
+    <span class="order-symbol">${getStockSymbol(order.symbol)}</span>
+    <span class="order-price">$${order.price.toFixed(2)}</span>
+    <span class="order-qty">${order.quantity}</span>
+    <span class="order-user">${order.userID}</span>
+    `;
+    container.appendChild(row);
+  });
 }
+function updateOrderBookView() {
+  const symbol = parseInt(document.getElementById("orderBookSymbol").value, 10);
+  const buyOrders = orderBookData
+  .filter(o => o.symbol === symbol && o.isBuy)
+  .sort((a, b) => b.price - a.price); // Highest buy price first
+  const sellOrders = orderBookData
+  .filter(o => o.symbol === symbol && !o.isBuy)
+  .sort((a, b) => a.price - b.price); // Lowest sell price first
+  
+  renderOrders(buyOrders, document.getElementById("buyOrders"));
+  renderOrders(sellOrders, document.getElementById("sellOrders"));
+}
+function setFormStatus(message, timeoutSeconds = 2) 
+{
+  const statusElem = document.getElementById("status");
+  statusElem.textContent = message;
+  if (setFormStatus._timer) clearTimeout(setFormStatus._timer);
+  setFormStatus._timer = setTimeout(() => {
+    statusElem.textContent = "";
+  }, timeoutSeconds * 1000);
+}
+
+// GLOBALS
+let orderBookData = [];
+let canSendOrder = true;
 
 // UI VARIABLES
 const preLoginDiv = document.getElementById("pre-login")
@@ -114,32 +153,47 @@ async function handleMessages(event)
         
         if (messageType === "Login")
         {
-            const userID = data.getUint32(54, true);
-            const loginType = getLoginType(data.getUint32(58, true));
-            if (loginType === "Acknowledge")
-            {
+          const userID = data.getUint32(54, true);
+          const loginType = getLoginType(data.getUint32(58, true));
+          if (loginType === "Acknowledge")
+          {
 
-                localStorage.setItem("userID", userID);
-                preLoginDiv.style.display = "none";
-                postLoginDiv.style.display = "flex";
-                console.log("Login authenticated");
-            }
+              localStorage.setItem("userID", userID);
+              preLoginDiv.style.display = "none";
+              postLoginDiv.style.display = "flex";
+              console.log("Login authenticated");
+          }
         }
         else if (messageType == "Trade")
         {
-            const trade = 
-            {
-                symbol: getStockSymbol(data.getUint32(4, true)),
-                price: data.getFloat32(8, true),
-                quantity: data.getUint32(12, true),
-                buyOrderID: data.getUint32(16, true),
-                sellOrderID: data.getUint32(20, true),
-                userID: data.getUint32(24, true),
-                orderType: getOrderType(data.getUint32(28, true))
-            };
-            addTradeCard(trade);
+          const trade = 
+          {
+              symbol: getStockSymbol(data.getUint32(4, true)),
+              price: data.getFloat32(8, true),
+              quantity: data.getUint32(12, true),
+              buyOrderID: data.getUint32(16, true),
+              sellOrderID: data.getUint32(20, true),
+              userID: data.getUint32(24, true),
+              orderType: getOrderType(data.getUint32(28, true))
+          };
+          addTradeCard(trade);
         }
-
+        else if (messageType == "Order")
+        {
+          console.log("Received Order message");  
+          const order = 
+          {
+              symbol: data.getUint32(4, true),
+              price: data.getFloat32(8, true),
+              quantity: data.getUint32(12, true),
+              orderID: data.getUint32(16, true),
+              userID: data.getUint32(20, true),
+              isBuy: !!data.getUint32(24, true),
+          };
+          // Add the order to the orderBookData array
+          orderBookData.push(order);
+          updateOrderBookView();
+        }
     } 
     catch (err) 
     {
@@ -147,8 +201,7 @@ async function handleMessages(event)
     }
 }
 
-
-// FORM LISTENERS
+// LISTENERS
 // Login
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -172,18 +225,6 @@ loginForm.addEventListener("submit", (e) => {
 
   ws.send(buffer);
 });
-// Navbar
-const tabs = document.querySelectorAll(".tab");
-const navButtons = document.querySelectorAll(".nav-btn");
-navButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const target = btn.getAttribute("data-tab");
-    // toggle active button
-    navButtons.forEach(b => b.classList.toggle("active", b === btn));
-    // toggle tabs
-    tabs.forEach(tab => tab.classList.toggle("active", tab.id === target));
-  });
-});
 // Order
 document.getElementById("orderForm").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -202,7 +243,6 @@ document.getElementById("orderForm").addEventListener("submit", (e) => {
   const isBuy = parseInt(document.getElementById("isBuy").value, 10);
   const orderType = parseInt(document.getElementById("orderType").value, 10);
 
-
   const buffer = new ArrayBuffer(32);
   const view = new DataView(buffer);
 
@@ -219,8 +259,23 @@ document.getElementById("orderForm").addEventListener("submit", (e) => {
   ws.send(buffer);
   setFormStatus("Order sent!");
 });
-
-
-
+// Order Books
+document.addEventListener("DOMContentLoaded", (e) => {
+  e.preventDefault();
+  const symbolSelector = document.getElementById("orderBookSymbol");
+  if (symbolSelector) 
+  {
+    symbolSelector.addEventListener("change", updateOrderBookView);
+    updateOrderBookView(); // Initial load
+  }
+  // Also update when switching to the order-books tab
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.getAttribute('data-tab') === 'order-books') {
+        updateOrderBookView();
+      }
+    });
+  });
+});
 
 

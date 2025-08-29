@@ -1,4 +1,3 @@
-/* ===== Reset ===== */
 * {
   margin: 0;
   padding: 0;
@@ -7,7 +6,7 @@
 }
 
 body {
-  background-color: white;  
+  background-color: white;
   color: #222;
   line-height: 1.5;
   min-height: 100vh;
@@ -15,20 +14,53 @@ body {
   flex-direction: column;
 }
 
-/* ===== Pre-login (Login Form) ===== */
+/* ===== Header ===== */
+.app-header {
+  width: 100%;
+  background: #fff;
+  color: #2e7d32;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.10);
+  position: relative;
+  z-index: 10;
+  border-radius: 0 0 18px 18px;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  height: 3.5em;
+  padding-left: 2em;
+  background: #fff;
+  border-radius: 0 0 18px 18px;
+  box-shadow: none;
+}
+
+.project-title {
+  color: #2e7d32;
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* ===== Pre-login ===== */
 #pre-login {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
+  background: #fff;
 }
 
 .login-container {
-  background: white;
+  background: #fff;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 320px;
   text-align: center;
 }
@@ -75,152 +107,136 @@ body {
   font-size: 0.9rem;
 }
 
-/* ===== Post-login Dashboard ===== */
+/* ===== Post-login ===== */
 #post-login {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-height: 100vh;
+  width: 100%;
 }
 
-/* Header */
-.app-header {
-  background: white; 
-  color: #2e7d32;
-  padding: 1rem;
+.main-flex {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  border-radius: 10px
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: flex-start;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 4em 2em 2em 2em;
+  box-sizing: border-box;
 }
 
-.app-header .brand {
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
-.nav {
+.main-section {
+  flex: 1 1 0;
+  min-width: 320px;
+  max-width: 600px;
   display: flex;
-  gap: 0.5rem;
-}
-
-.nav-btn {
-  background: white;
-  border: 2px solid #2e7d32;
-  color: #2e7d32;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.2s;
-}
-
-.nav-btn.active,
-.nav-btn:hover {
-  background: #256628;
-  color: white;
-}
-
-/* Content */
-.content {
-  padding: 2rem;
-  flex: 1;
-}
-
-.tab {
-  display: none;
-}
-
-.tab.active {
-  display: block;
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: 0;
 }
 
 h2 {
   margin-bottom: 1rem;
   color: #2e7d32;
+  text-align: center;
 }
 
-#place-order
-{
-  padding-top: 4em;
-  max-width: fit-content;
-  justify-self: center;
-}
-#trades
-{
-  padding-top: 4em;
-  max-width: fit-content;
-  justify-self: center;
-}
-#order-books
-{
-  padding-top: 4em;
-  max-width: fit-content;
-  justify-self: center;
-}
-
-/* Cards */
 .card {
   background: white;
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .form-card {
   margin-bottom: 2rem;
+  min-height: 430px;
+  background: white;
+  border: 1.5px solid #ddd;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px 0 rgba(46, 125, 50, 0.10), 0 2px 8px 0 rgba(0, 0, 0, 0.04);
+  padding: 2.2em 2em 1.2em 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
-/* Form grid */
+.form-card h2 {
+  color: #2e7d32;
+  margin-bottom: 1.2em;
+  text-align: center;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.2em 1.5em;
+  margin-bottom: 1.5em;
 }
 
-.grid label {
+#place-order label {
+  font-weight: 600;
+  color: #256628;
+  margin-bottom: 0.3em;
   display: flex;
   flex-direction: column;
-  font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1em;
 }
 
-.grid input,
-.grid select {
-  padding: 0.5rem;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  margin-top: 0.25rem;
+#place-order select,
+#place-order input[type="number"] {
+  margin-top: 0.3em;
+  padding: 0.5em 0.7em;
+  border-radius: 7px;
+  border: 1px solid #b2dfdb;
+  background: #fff;
+  font-size: 1em;
+  transition: border 0.2s;
 }
 
-.actions {
-  margin-top: 1rem;
+#place-order select:focus,
+#place-order input[type="number"]:focus {
+  border: 1.5px solid #2e7d32;
+  outline: none;
+}
+
+#place-order .actions {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1em;
+  margin-top: 1em;
 }
 
-.btn {
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
+#place-order .btn-primary {
+  background: linear-gradient(90deg, #43a047 0%, #388e3c 100%);
+  color: #fff;
   border: none;
+  border-radius: 7px;
+  padding: 0.7em 1.5em;
+  font-size: 1.1em;
   font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
 }
 
-.btn-primary {
-  background: #2e7d32;
-  color: white;
+#place-order .btn-primary:hover {
+  background: linear-gradient(90deg, #388e3c 0%, #2e7d32 100%);
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.13);
 }
 
-.btn-primary:hover {
-  background: #256628;
-}
-
-.muted {
-  color: #666;
-  font-size: 0.9rem;
+#place-order .muted {
+  color: #888;
+  font-size: 0.98em;
 }
 
 /* Trade cards */
@@ -232,10 +248,10 @@ h2 {
 
 .trade-card {
   background: white;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .trade-info {
@@ -246,5 +262,152 @@ h2 {
   color: #333;
 }
 
+/* Order Book Columns */
+.order-book-columns {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
 
+.order-book-column {
+  flex: 1;
+  background: none;
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 200px;
+  box-shadow: none;
+  max-height: 55vh;
+  overflow-y: auto;
+}
 
+.buy-column h3,
+.sell-column h3 {
+  color: #2e7d32;
+  padding: 0.2em 0 0.2em 0;
+  margin-bottom: 0.4em;
+}
+
+.sell-column h3 {
+  color: #c62828;
+}
+
+.order-row {
+  background: white;
+  border-radius: 8px;
+  box-shadow: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7em 1em;
+  margin-bottom: 0.8em;
+  font-size: 0.98em;
+  border: 1px solid #ddd;
+  transition: border 0.18s;
+}
+
+.order-row:last-child {
+  margin-bottom: 0;
+}
+
+.order-row .order-symbol {
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.order-row .order-user {
+  color: #888;
+  font-size: 0.9em;
+}
+
+#orderbooks label[for="orderBookSymbol"] {
+  display: block;
+  text-align: center;
+  font-weight: 600;
+  color: #256628;
+  margin-bottom: 0.3em;
+  margin-top: 1em;
+  width: 100%;
+}
+
+#orderBookSymbol {
+  display: block;
+  margin: 0 auto 1em auto;
+  padding: 0.5em 0.7em;
+  border-radius: 7px;
+  border: 1px solid #b2dfdb;
+  background: #fff;
+  font-size: 1em;
+  transition: border 0.2s;
+  width: 60%;
+  min-width: 120px;
+  max-width: 220px;
+  text-align: center;
+}
+
+#orderBookSymbol:focus {
+  border: 1.5px solid #2e7d32;
+  outline: none;
+}
+
+#tradeContainer {
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.order-book-column {
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 1200px) {
+  .main-flex {
+    flex-direction: column;
+    gap: 2em;
+    padding: 2em 1em 1em 1em;
+  }
+
+  .main-section {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    padding: 1em;
+  }
+
+  .project-title {
+    font-size: 1.2em;
+  }
+
+  .login-container {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .form-card {
+    padding: 1.5em 1em;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  #place-order .actions {
+    flex-direction: column;
+  }
+
+  #place-order .btn-primary {
+    width: 100%;
+  }
+
+  .order-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .order-row .order-symbol {
+    margin-bottom: 0.5em;
+  }
+}

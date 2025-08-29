@@ -93,6 +93,30 @@ void Engine::BroadcastTrade(Trade* trade)
 
 	delete[] data;
 }
+void Engine::BroadcastOrder(Order* order)
+{
+	Engine& instance = Engine::GetInstance();
+
+	size_t size = order->GetSerializedSize();
+	char* data = new char[size];
+
+	order->Serialize(data);
+
+	std::lock_guard<std::mutex> connectionLock(instance.connectionMtx);
+	std::lock_guard<std::mutex> activeUserLock(instance.activeUserMapMtx);
+	
+	for (auto& connection : instance.connections)
+	{
+		websocketpp::lib::error_code ec;
+		instance.webSocketServer.send(connection, data, size, websocketpp::frame::opcode::binary, ec);
+		if (ec) 
+		{
+			printf("Broadcast error: %s\n", ec.message());
+		}
+	}
+
+	delete[] data;
+}
 void Engine::VerifyLogin(std::unique_ptr<Login> login)
 {
 	Engine& instance = Engine::GetInstance();
@@ -184,6 +208,7 @@ void Engine::HandleMessage(connection_hdl handle, message_ptr message)
 			{
 				newMessage = std::make_unique<Order>();
 				newMessage->Deserialize(data);
+				Engine::BroadcastOrder((Order*)newMessage.get());
 				break;
 			}
 		case Message::Type::Login:

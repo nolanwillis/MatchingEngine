@@ -41,6 +41,7 @@ public:
 
 	static void Run(uint16_t port, int threadCount = 4);
 	static void BroadcastTrade(Trade* trade);
+	static void BroadcastOrder(Order* order);
 	static void VerifyLogin(std::unique_ptr<Login> login);
 
 private:
