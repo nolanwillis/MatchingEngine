@@ -1,26 +1,41 @@
 
-## About
-#### The main goal of this project was to create a smaller tech demo with features usually scene in high freuency trading. The backend is done completely in C++ 20 with a basic single webpage for the client. Communication between the two is done exclusivly through WebSockets for simplicity and all data is saved using a sqlite database on the server. With this demo multiple users can log on, place limit or market orders, view live order book feeds, and completed trades. 
-## Features
-- Multithreading, enabling multiple users and high throughput.
-- Custom messaging via WebSockets using binary for smaller messaging.
-- Database has a seperate writer thread, so reads and writes from the database don't slow things down.
-- Responsive event driven UI.
-- Uses Google Test for unit testing all aspects of the project. 
-## Architecture
-### Engine
-- Keeps track of users and WebSocket connections.
-- Initial message handling, decides if the message should go to the OrderBookManager or directly to DatabaseManager.
-- Defines broadcast functions to send information back to the client.
-### Order Book Manager
-- Creates and manages all the OrderBooks. 
-- Directs order related messages to the correct OrderBook.
-- Manages the lifetimes of all the OrderBookWorkers using a promise/shared future.
-    #### Simplified UML 
-    ![Class Diagram](OrderBookUML.png)
-    #### Sequence Diagram
-    ![Class Diagram](OrderBookSequence.png)
-### Database Manager
-- Initializes the SQLite database.
-- Provides functions for adding/retrieving users and trades from the database.
-- Manages writer thread for writing trades to the database.
+## About  
+##### The main goal of this project was to build a small fullstack app inspired by techniques used in high-frequency trading. The backend is written entirely in C++20, with a simple single-page client. Communication between client and server happens exclusively through WebSockets for simplicity, and all data is stored in a SQLite database on the server.  
+
+## Features  
+- 🚀 Multithreading for handling multiple users with high throughput.  
+- 📡 Custom binary messaging over WebSockets for smaller, faster messages.  
+- 🗄️ Dedicated database writer thread so reads/writes don’t block.  
+- ⚡ Responsive, event-driven UI.  
+- ✅ Unit testing across all components using Google Test.  
+
+## Architecture  
+
+### Engine  
+- Tracks users and their WebSocket connections.  
+- Handles initial messages and routes them to either the **OrderBookManager** or **DatabaseManager**.  
+- Provides broadcast functions to send data back to clients.  
+- Verifies login messages with the database (not full authentication, just a username).  
+- Manages the lifetimes of all **EngineWorkers** using a `promise/shared_future`.  
+
+#### Simplified UML  
+![Class Diagram](EngineUML.png)  
+##### The **Engine** singleton and its workers are simpler than the **OrderBookManager**, so a sequence diagram wasn’t necessary. The Engine deserializes messages from WebSockets and places them into its `routingQueue`. Workers then pull messages off the queue and decide where they should go.  
+
+Both **Engine** and **OrderBookManager** classes declare their workers as `friend`, giving them full access.  
+
+### Order Book Manager  
+- Creates and manages all **OrderBooks**.  
+- Routes order-related messages to the correct **OrderBook**.  
+- Manages the lifetimes of all **OrderBookWorkers** using a `promise/shared_future`.  
+
+#### Simplified UML  
+![Class Diagram](OrderBookUML.png)  
+
+#### Sequence Diagram  
+![Sequence Diagram](OrderBookSequence.png)  
+
+### Database Manager  
+- Initializes the SQLite database.  
+- Provides functions for adding/retrieving users and trades.  
+- Runs a dedicated writer thread for inserting trades into the database.
